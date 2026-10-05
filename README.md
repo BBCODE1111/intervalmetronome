@@ -4,6 +4,8 @@
 
 **線上使用：https://bbcode1111.github.io/intervalmetronome/**
 
+[免費女聲試聽比較](https://bbcode1111.github.io/intervalmetronome/voice-preview/)：Heart、Bella、Sarah。試聽樣本採保留音高的時間壓縮；選定音色後再套用到正式版。
+
 原始專案：[Alecliu/intervalmetronome](https://github.com/Alecliu/intervalmetronome)。本倉庫保留完整原始 Git 歷史，作為 BBCODE1111 的發布版本。
 
 ## 使用方式

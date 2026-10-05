@@ -7,4 +7,6 @@
 - SoundTouchJS core 2.1.1: Mozilla Public License 2.0, Copyright Olli Parviainen, Ryan Berdeen, Jakub Fiala and Steve 'Cutter' Blades. Used for WSOLA tempo changes with stable pitch. Full license: `licenses/SoundTouch-MPL-2.0.txt`. The deployed `assets/stretch.js.map` includes the corresponding unmodified library source. Upstream: https://github.com/cutterbl/SoundTouchJS/tree/master/packages/core.
 - esbuild 0.25.12: MIT license; build-time JavaScript bundling only.
 
+- Female voice comparison samples under `voice-preview/audio`: generated with `kokoro-js` 1.2.1 and the Apache-2.0 Kokoro-82M model (https://huggingface.co/hexgrad/Kokoro-82M). Voices: `af_heart`, `af_bella`, `af_sarah`. The samples contain the numbers one through eight at the same settings for each voice. Pitch-preserving duration adjustment was performed offline with `@soundtouchjs/core` 2.1.1. Only the generated WAV files are served; no model weights or speech engine are downloaded by the listener. Generation metadata is in `voice-preview/audio/manifest.json`.
+
 The original application and Git history come from https://github.com/Alecliu/intervalmetronome. This release does not assign a new license to the application code.

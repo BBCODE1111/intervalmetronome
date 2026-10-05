@@ -12,6 +12,7 @@ await copyFile('src/audio.js', 'dist/assets/audio.js');
 await build({ entryPoints: ['src/stretch.js'], outfile: 'dist/assets/stretch.js', bundle: true, format: 'iife', globalName: 'MetronomeStretch', target: 'es2020', sourcemap: true, legalComments: 'inline' });
 await copyFile('node_modules/@soundtouchjs/core/LICENSE', 'dist/licenses/SoundTouch-MPL-2.0.txt');
 await cp('public/audio', 'dist/assets/audio', { recursive: true });
+await cp('public/voice-preview', 'dist/voice-preview', { recursive: true });
 await copyFile('public/favicon.svg', 'dist/favicon.svg');
 await copyFile('README.md', 'dist/README.md');
 await copyFile('THIRD_PARTY_NOTICES.md', 'dist/THIRD_PARTY_NOTICES.md');
