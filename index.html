@@ -4,263 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>復古類比間隔節拍器 - 專業旗艦版</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
-        :root {
-            --panel-bg: #2c2c2c;
-            --metal-shine: linear-gradient(145deg, #3e3e3e, #1a1a1a);
-            --led-red: #ff3131;
-            --led-dim: #4b0000;
-            --accent-gold: #d4af37;
-            --switch-bg: #111;
-        }
-
-        body {
-            background-color: #121212;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Courier New', Courier, monospace;
-            color: #ccc;
-        }
-
-        .hardware-case {
-            background: var(--metal-shine);
-            border: 8px solid #111;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.1);
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-        }
-
-        .logo-area {
-            font-family: 'Orbitron', sans-serif;
-            color: #444;
-            font-size: 0.8rem;
-            border: 1px dashed #444;
-            padding: 5px 10px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .display-screen {
-            background: #0a0a0a;
-            border: 4px inset #333;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            box-shadow: inset 0 0 15px rgba(255,0,0,0.2);
-        }
-
-        .bpm-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            color: var(--led-red);
-            text-shadow: 0 0 10px var(--led-red);
-            line-height: 1;
-        }
-
-        .display-label {
-            font-size: 0.65rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-
-        /* 專業橫向撥鈕 (Slide Toggle) */
-        .slide-toggle-wrap {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toggle-label {
-            font-size: 0.5rem;
-            font-weight: bold;
-            color: #444;
-            transition: color 0.2s;
-        }
-
-        .toggle-label.active-on { color: var(--accent-gold); }
-        .toggle-label.active-off { color: #888; }
-
-        .slide-switch {
-            position: relative;
-            width: 44px;
-            height: 22px;
-            background: var(--switch-bg);
-            border-radius: 11px;
-            border: 1px solid #333;
-            cursor: pointer;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .slide-handle {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 16px;
-            height: 16px;
-            background: linear-gradient(#eee, #999);
-            border-radius: 50%;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-
-        input[type="checkbox"]:checked + .slide-switch .slide-handle {
-            transform: translateX(22px);
-            background: linear-gradient(#fff, var(--accent-gold));
-        }
-
-        /* 垂直撥桿樣式 */
-        .toggle-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .toggle-switch-v {
-            position: relative;
-            width: 32px;
-            height: 50px;
-            background: #1a1a1a;
-            border-radius: 4px;
-            border: 2px solid #333;
-            cursor: pointer;
-        }
-
-        .toggle-handle-v {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            left: 2px;
-            background: linear-gradient(#eee, #999);
-            border-radius: 3px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            transition: transform 0.1s ease-in-out;
-            top: 22px;
-        }
-
-        input[type="checkbox"]:checked + .toggle-switch-v .toggle-handle-v {
-            transform: translateY(-20px);
-            background: linear-gradient(#fff, var(--accent-gold));
-        }
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-
-        input[type="range"]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 5px;
-            background: #111;
-            border-radius: 3px;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 20px;
-            width: 10px;
-            background: linear-gradient(#ddd, #666);
-            border-radius: 2px;
-            cursor: pointer;
-            margin-top: -8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .big-button {
-            background: linear-gradient(#cc0000, #880000);
-            border: 4px solid #333;
-            border-radius: 50%;
-            width: 65px;
-            height: 65px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #440000, 0 8px 15px rgba(0,0,0,0.5);
-            transition: all 0.1s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-
-        .big-button:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #440000, 0 4px 8px rgba(0,0,0,0.5);
-        }
-
-        .big-button.active {
-            background: linear-gradient(#00cc00, #008800);
-            box-shadow: 0 4px 0 #004400, 0 8px 15px rgba(0,0,0,0.5);
-        }
-
-        .input-box {
-            background: #0a0a0a;
-            border: 1px solid #444;
-            color: var(--accent-gold);
-            padding: 4px;
-            width: 50px;
-            text-align: center;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-        }
-
-        .status-light {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--led-dim);
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-            margin: 0 auto 3px;
-        }
-
-        .status-light.active {
-            background: var(--led-red);
-            box-shadow: 0 0 10px var(--led-red);
-        }
-
-        .label-text {
-            font-size: 0.6rem;
-            color: #aaa;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .control-group {
-            background: rgba(0,0,0,0.25);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 12px;
-        }
-
-        .divider {
-            height: 1px;
-            background: rgba(255,255,255,0.05);
-            margin: 8px 0;
-        }
-    </style>
+    <meta name="description" content="吉他與樂器練習用間隔節拍器，支援漸進加速、休息間隔、拍號與語音提示。">
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <meta name="theme-color" content="#121212">
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script src="./assets/app.js" defer></script>
 </head>
 <body>
+    <noscript>請啟用 JavaScript 才能使用節拍器。</noscript>
 
-    <div class="hardware-case">
+    <main class="hardware-case" aria-label="Interval Metronome">
         <!-- TOP BAR -->
         <div class="flex justify-between items-start mb-2">
             <div class="logo-area" id="userLogo">
-                YOUR LOGO HERE
+                INTERVAL METRONOME
             </div>
             <div class="flex flex-col items-end">
                 <div class="text-[0.5rem] text-[#444] tracking-widest font-bold mb-1">UNIT ID: INTERVAL-MASTER-PRO</div>
@@ -281,14 +38,14 @@
                 <div class="control-group">
                     <div class="label-text mb-2 text-left">Tempo (BPM)</div>
                     <div class="flex items-center gap-2">
-                        <input type="range" id="bpmSlider" min="40" max="280" value="120">
-                        <input type="number" id="bpmInput" class="input-box" value="120">
+                        <input type="range" id="bpmSlider" aria-label="Tempo slider" min="30" max="400" value="120">
+                        <input type="number" id="bpmInput" aria-label="Tempo BPM" min="30" max="400" step="1" class="input-box" value="120">
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="label-text mb-2 text-left">Master Volume</div>
                     <div class="flex items-center gap-2">
-                        <input type="range" id="volumeSlider" min="0" max="100" value="80">
+                        <input type="range" id="volumeSlider" aria-label="Master volume" min="0" max="100" value="80">
                         <span id="volVal" class="text-[0.65rem] font-bold text-gray-500">80%</span>
                     </div>
                 </div>
@@ -299,11 +56,11 @@
                 <div class="flex flex-col gap-3">
                     <div class="flex justify-between items-center text-[0.7rem]">
                         <span>Beats / MSR</span>
-                        <input type="number" id="sigNumerator" class="input-box" value="4" min="1" max="16">
+                        <input type="number" id="sigNumerator" aria-label="Beats per measure" class="input-box" value="4" min="1" max="16">
                     </div>
                     <div class="flex justify-between items-center text-[0.7rem]">
                         <span>Note Value</span>
-                        <select id="sigDenominator" class="input-box w-[60px] text-xs">
+                        <select id="sigDenominator" aria-label="Note value" class="input-box w-[60px] text-xs">
                             <option value="4">/ 4</option>
                             <option value="8">/ 8</option>
                         </select>
@@ -319,7 +76,7 @@
                 <div class="slide-toggle-wrap">
                     <span class="toggle-label">OFF</span>
                     <label class="cursor-pointer">
-                        <input type="checkbox" id="intervalEnableToggle" class="hidden" checked>
+                        <input type="checkbox" id="intervalEnableToggle" aria-label="Enable interval training" class="sr-only" checked>
                         <div class="slide-switch">
                             <div class="slide-handle"></div>
                         </div>
@@ -331,15 +88,15 @@
             <div id="intervalPanel" class="grid grid-cols-3 gap-2 opacity-100 transition-all duration-300">
                 <div class="flex flex-col items-center">
                     <div class="label-text text-[0.55rem]">Each (MSR)</div>
-                    <input type="number" id="stepMeasures" class="input-box w-full mt-1" value="8">
+                    <input type="number" id="stepMeasures" aria-label="Measures per increment" min="1" max="999" step="1" class="input-box w-full mt-1" value="8">
                 </div>
                 <div class="flex flex-col items-center">
                     <div class="label-text text-[0.55rem]">Incr (BPM)</div>
-                    <input type="number" id="stepAmount" class="input-box w-full mt-1" value="10">
+                    <input type="number" id="stepAmount" aria-label="BPM increment" min="1" max="100" step="1" class="input-box w-full mt-1" value="10">
                 </div>
                 <div class="flex flex-col items-center">
                     <div class="label-text text-[0.55rem]">Target BPM</div>
-                    <input type="number" id="targetBPM" class="input-box w-full mt-1" value="200">
+                    <input type="number" id="targetBPM" aria-label="Target BPM" min="30" max="400" step="1" class="input-box w-full mt-1" value="200">
                 </div>
             </div>
         </div>
@@ -351,7 +108,7 @@
                 <div class="slide-toggle-wrap">
                     <span class="toggle-label">OFF</span>
                     <label class="cursor-pointer">
-                        <input type="checkbox" id="restEnableToggle" class="hidden" checked>
+                        <input type="checkbox" id="restEnableToggle" aria-label="Enable rest" class="sr-only" checked>
                         <div class="slide-switch">
                             <div class="slide-handle"></div>
                         </div>
@@ -363,12 +120,12 @@
             <div id="restPanel" class="flex justify-between items-center text-[0.65rem] opacity-100 transition-all duration-300">
                 <div class="flex items-center gap-2">
                     <span>Every</span>
-                    <input type="number" id="restIntervals" class="input-box w-[40px]" value="4">
+                    <input type="number" id="restIntervals" aria-label="Increments before rest" min="1" max="999" step="1" class="input-box w-[40px]" value="4">
                     <span>Increments</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span>Wait</span>
-                    <input type="number" id="restSeconds" class="input-box w-[40px]" value="10">
+                    <input type="number" id="restSeconds" aria-label="Rest seconds" min="1" max="3600" step="1" class="input-box w-[40px]" value="10">
                     <span>Sec</span>
                 </div>
             </div>
@@ -380,14 +137,14 @@
                 <div class="toggle-container">
                     <div class="label-text">START CUE</div>
                     <label>
-                        <input type="checkbox" id="startCueToggle" class="hidden" checked>
+                        <input type="checkbox" id="startCueToggle" aria-label="Start cue" class="sr-only" checked>
                         <div class="toggle-switch-v"><div class="toggle-handle-v"></div></div>
                     </label>
                 </div>
                 <div class="toggle-container">
                     <div class="label-text">TRANS CUE</div>
                     <label>
-                        <input type="checkbox" id="changeCueToggle" class="hidden" checked>
+                        <input type="checkbox" id="changeCueToggle" aria-label="Transition cue" class="sr-only" checked>
                         <div class="toggle-switch-v"><div class="toggle-handle-v"></div></div>
                     </label>
                 </div>
@@ -398,284 +155,13 @@
                 <div class="label-text">PULSE</div>
             </div>
 
-            <button id="startBtn" class="big-button">START</button>
+            <button id="startBtn" type="button" aria-pressed="false" class="big-button">START</button>
         </div>
 
         <div id="progressInfo" class="text-center text-[0.55rem] text-gray-600 uppercase tracking-widest mt-4">
             MSR: 0 | INCR: 0 | STATUS: STOPPED
         </div>
-    </div>
+    </main>
 
-    <script>
-        // --- AUDIO ENGINE ---
-        let audioCtx = null;
-        let isPlaying = false;
-        let nextBeatTime = 0.0;
-        let timerID = null;
-
-        let bpm = 120;
-        let currentMeasure = 1;
-        let currentBeat = 0; // 0 為強音
-        let incrementCount = 0;
-        let isResting = false;
-        let volume = 80;
-        
-        let cueCounter = 0; 
-        const cueWords = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen"];
-
-        const scheduleAheadTime = 0.1;
-        const lookahead = 25.0;
-
-        // --- DOM ELEMENTS ---
-        const bpmDisplay = document.getElementById('bpmDisplay');
-        const bpmInput = document.getElementById('bpmInput');
-        const bpmSlider = document.getElementById('bpmSlider');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volVal = document.getElementById('volVal');
-        const startBtn = document.getElementById('startBtn');
-        const beatLight = document.getElementById('beatLight');
-        const infoBar = document.getElementById('infoBar');
-        const progressInfo = document.getElementById('progressInfo');
-        const sigNumerator = document.getElementById('sigNumerator');
-        const sigDenominator = document.getElementById('sigDenominator');
-        const signatureDisplay = document.getElementById('signatureDisplay');
-        
-        const intervalEnableToggle = document.getElementById('intervalEnableToggle');
-        const intervalPanel = document.getElementById('intervalPanel');
-        const stepMeasures = document.getElementById('stepMeasures');
-        const stepAmount = document.getElementById('stepAmount');
-        const targetBPM = document.getElementById('targetBPM');
-        
-        const restIntervals = document.getElementById('restIntervals');
-        const restSeconds = document.getElementById('restSeconds');
-        const restEnableToggle = document.getElementById('restEnableToggle');
-        const restPanel = document.getElementById('restPanel');
-        
-        const startCueToggle = document.getElementById('startCueToggle');
-        const changeCueToggle = document.getElementById('changeCueToggle');
-
-        // --- UI SYNC ---
-        function updateBPM(val) {
-            bpm = Math.max(30, Math.min(400, parseInt(val)));
-            bpmDisplay.textContent = bpm;
-            bpmInput.value = bpm;
-            bpmSlider.value = bpm;
-        }
-
-        bpmInput.addEventListener('change', (e) => updateBPM(e.target.value));
-        bpmSlider.addEventListener('input', (e) => updateBPM(e.target.value));
-        volumeSlider.addEventListener('input', (e) => {
-            volume = parseInt(e.target.value);
-            volVal.textContent = volume + "%";
-        });
-        
-        sigNumerator.addEventListener('input', updateSigUI);
-        sigDenominator.addEventListener('input', updateSigUI);
-        
-        function updateSigUI() {
-            signatureDisplay.textContent = `${sigNumerator.value} / ${sigDenominator.value} TIME`;
-        }
-
-        function updateToggleVisuals(checkbox, panel) {
-            const labels = checkbox.closest('.slide-toggle-wrap').querySelectorAll('.toggle-label');
-            if (checkbox.checked) {
-                panel.style.opacity = "1";
-                labels[0].classList.remove('active-off');
-                labels[1].classList.add('active-on');
-            } else {
-                panel.style.opacity = "0.3";
-                labels[0].classList.add('active-off');
-                labels[1].classList.remove('active-on');
-            }
-        }
-
-        intervalEnableToggle.addEventListener('change', () => updateToggleVisuals(intervalEnableToggle, intervalPanel));
-        restEnableToggle.addEventListener('change', () => updateToggleVisuals(restEnableToggle, restPanel));
-
-        // --- SPEECH ---
-        function speak(text) {
-            const utterance = new SpeechSynthesisUtterance(text.toString());
-            utterance.lang = 'en-US';
-            const baseRate = sigDenominator.value == "8" ? (bpm / 160) : (bpm / 100);
-            utterance.rate = Math.min(Math.max(baseRate, 1.3), 3.5);
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // --- SOUND ENGINE ---
-        function playClick(time, isStrong) {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const envelope = audioCtx.createGain();
-            const masterGain = audioCtx.createGain();
-
-            masterGain.gain.value = volume / 100;
-            osc.frequency.setValueAtTime(isStrong ? 1600 : 900, time);
-            osc.type = 'triangle';
-
-            envelope.gain.setValueAtTime(1, time);
-            envelope.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
-
-            osc.connect(envelope);
-            envelope.connect(masterGain);
-            masterGain.connect(audioCtx.destination);
-
-            osc.start(time);
-            osc.stop(time + 0.1);
-
-            const delay = (time - audioCtx.currentTime) * 1000;
-            setTimeout(() => {
-                if (!isPlaying) return;
-                beatLight.classList.add('active');
-                setTimeout(() => beatLight.classList.remove('active'), 50);
-            }, delay);
-        }
-
-        // --- SCHEDULER ---
-        function scheduler() {
-            while (nextBeatTime < audioCtx.currentTime + scheduleAheadTime) {
-                scheduleBeat(nextBeatTime);
-                advanceBeat();
-            }
-            timerID = setTimeout(scheduler, lookahead);
-        }
-
-        function scheduleBeat(time) {
-            if (isResting) return;
-
-            const num = parseInt(sigNumerator.value);
-            
-            // CUE 倒數模式
-            if (cueCounter >= 1 && cueCounter <= num) {
-                playClick(time, true);
-                const currentWord = cueWords[cueCounter];
-                const delay = (time - audioCtx.currentTime) * 1000;
-                setTimeout(() => { if (isPlaying) speak(currentWord); }, Math.max(0, delay - 30));
-                infoBar.textContent = `CUE: ${currentWord}`;
-            } else {
-                // 正式運行模式
-                playClick(time, currentBeat === 0);
-                infoBar.textContent = `BEAT ${currentBeat + 1}`;
-            }
-        }
-
-        function advanceBeat() {
-            if (isResting) {
-                nextBeatTime += (60.0 / bpm);
-                return;
-            }
-
-            const num = parseInt(sigNumerator.value);
-            
-            // 如果在倒數，計數器遞增
-            if (cueCounter >= 1 && cueCounter <= num) {
-                if (cueCounter === num) {
-                    cueCounter = 0; // 倒數結束
-                    currentBeat = 0; // 確保下一拍是第一拍
-                } else {
-                    cueCounter++;
-                }
-            } else {
-                // 正常運作
-                currentBeat++;
-                if (currentBeat >= num) {
-                    currentBeat = 0;
-                    currentMeasure++;
-                    if (intervalEnableToggle.checked) checkIntervals();
-                }
-            }
-            
-            const beatBase = sigDenominator.value == "8" ? 0.5 : 1.0;
-            nextBeatTime += (60.0 / bpm) * beatBase;
-            updateStatusInfo();
-        }
-
-        function checkIntervals() {
-            const mLimit = parseInt(stepMeasures.value) || 8;
-            const bIncr = parseInt(stepAmount.value) || 10;
-            const maxB = parseInt(targetBPM.value) || 200;
-            const rIncrLimit = parseInt(restIntervals.value) || 4;
-
-            if (currentMeasure > mLimit) {
-                currentMeasure = 1;
-                incrementCount++;
-                const nextBpm = Math.min(bpm + bIncr, maxB);
-
-                if (restEnableToggle.checked && rIncrLimit > 0 && incrementCount >= rIncrLimit) {
-                    triggerRest(nextBpm);
-                } else {
-                    if (bpm >= maxB) {
-                        infoBar.textContent = "TARGET REACHED";
-                    } else {
-                        updateBPM(nextBpm);
-                        if (changeCueToggle.checked) {
-                            cueCounter = 1; // 啟動倒數
-                            currentBeat = 0;
-                        }
-                    }
-                }
-            }
-        }
-
-        function triggerRest(nextGoalBpm) {
-            isResting = true;
-            incrementCount = 0;
-            const rSec = parseInt(restSeconds.value) || 10;
-            
-            updateBPM(nextGoalBpm);
-            speak("Rest started. Next speed is " + nextGoalBpm);
-            
-            let timeLeft = rSec;
-            const timer = setInterval(() => {
-                if (!isPlaying) { clearInterval(timer); return; }
-                timeLeft--;
-                infoBar.textContent = `REST: ${timeLeft}s`;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    isResting = false;
-                    currentMeasure = 1;
-                    currentBeat = 0;
-                    if (startCueToggle.checked) cueCounter = 1;
-                }
-            }, 1000);
-        }
-
-        function updateStatusInfo() {
-            progressInfo.textContent = `MSR: ${currentMeasure} | INCR: ${incrementCount} | STATUS: ${isResting ? 'RESTING' : (cueCounter > 0 ? 'CUEING' : 'RUNNING')}`;
-        }
-
-        function start() {
-            if (isPlaying) {
-                clearTimeout(timerID);
-                isPlaying = false;
-                startBtn.textContent = "START";
-                startBtn.classList.remove('active');
-                infoBar.textContent = "STOPPED";
-                return;
-            }
-
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            isPlaying = true;
-            startBtn.textContent = "STOP";
-            startBtn.classList.add('active');
-            
-            currentMeasure = 1;
-            currentBeat = 0;
-            incrementCount = 0;
-            
-            // 關鍵修復：確保啟動時的時間戳記正確，且 cueCounter 從 1 開始
-            nextBeatTime = audioCtx.currentTime + 0.05;
-            cueCounter = startCueToggle.checked ? 1 : 0;
-            
-            scheduler();
-        }
-
-        startBtn.addEventListener('click', start);
-
-        updateSigUI();
-        updateToggleVisuals(intervalEnableToggle, intervalPanel);
-        updateToggleVisuals(restEnableToggle, restPanel);
-    </script>
 </body>
 </html>
