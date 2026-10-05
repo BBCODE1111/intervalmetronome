@@ -1,0 +1,160 @@
+{
+  "version": 2,
+  "sampleRate": 24000,
+  "generator": "kokoro-js@1.2.1",
+  "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+  "modelSha256": "8fbea51ea711f2af382e88c833d9e288c6dc82ce5e98421ea61c058ce21a34cb",
+  "voice": "af_heart",
+  "voiceSha256": "d583ccff3cdca2f7fae535cb998ac07e9fcb90f09737b9a41fa2734ec44a8f0b",
+  "speed": 1.3,
+  "clips": {
+    "zero": {
+      "offset": 0,
+      "length": 11954
+    },
+    "one": {
+      "offset": 11954,
+      "length": 9722
+    },
+    "two": {
+      "offset": 21676,
+      "length": 11066
+    },
+    "three": {
+      "offset": 32742,
+      "length": 11097
+    },
+    "four": {
+      "offset": 43839,
+      "length": 10642
+    },
+    "five": {
+      "offset": 54481,
+      "length": 11556
+    },
+    "six": {
+      "offset": 66037,
+      "length": 10871
+    },
+    "seven": {
+      "offset": 76908,
+      "length": 11015
+    },
+    "eight": {
+      "offset": 87923,
+      "length": 9793
+    },
+    "nine": {
+      "offset": 97716,
+      "length": 10893
+    },
+    "ten": {
+      "offset": 108609,
+      "length": 10804
+    },
+    "eleven": {
+      "offset": 119413,
+      "length": 12535
+    },
+    "twelve": {
+      "offset": 131948,
+      "length": 11528
+    },
+    "thirteen": {
+      "offset": 143476,
+      "length": 11969
+    },
+    "fourteen": {
+      "offset": 155445,
+      "length": 12599
+    },
+    "fifteen": {
+      "offset": 168044,
+      "length": 12756
+    },
+    "sixteen": {
+      "offset": 180800,
+      "length": 13686
+    },
+    "seventeen": {
+      "offset": 194486,
+      "length": 14652
+    },
+    "eighteen": {
+      "offset": 209138,
+      "length": 11718
+    },
+    "nineteen": {
+      "offset": 220856,
+      "length": 12904
+    },
+    "twenty": {
+      "offset": 233760,
+      "length": 11650
+    },
+    "thirty": {
+      "offset": 245410,
+      "length": 11401
+    },
+    "forty": {
+      "offset": 256811,
+      "length": 12528
+    },
+    "fifty": {
+      "offset": 269339,
+      "length": 12289
+    },
+    "sixty": {
+      "offset": 281628,
+      "length": 13081
+    },
+    "seventy": {
+      "offset": 294709,
+      "length": 12955
+    },
+    "eighty": {
+      "offset": 307664,
+      "length": 10229
+    },
+    "ninety": {
+      "offset": 317893,
+      "length": 12031
+    },
+    "hundred": {
+      "offset": 329924,
+      "length": 12383
+    },
+    "thousand": {
+      "offset": 342307,
+      "length": 11696
+    },
+    "million": {
+      "offset": 354003,
+      "length": 11401
+    },
+    "billion": {
+      "offset": 365404,
+      "length": 13112
+    },
+    "trillion": {
+      "offset": 378516,
+      "length": 11284
+    },
+    "quadrillion": {
+      "offset": 389800,
+      "length": 14178
+    },
+    "rest": {
+      "offset": 403978,
+      "length": 11162
+    },
+    "next": {
+      "offset": 415140,
+      "length": 11181
+    },
+    "speed": {
+      "offset": 426321,
+      "length": 12830
+    }
+  }
+}

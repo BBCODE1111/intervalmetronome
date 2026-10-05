@@ -13,9 +13,11 @@
 3. 按 **START** 開始，按 **STOP** 停止。首次會先載入內建語音，準備完成後才一起播放第一聲報數與節拍；載入期間仍可按 STOP 取消。載入失敗會顯示提示，可按 START 重試。
 4. 開啟 **Interval Training Engine**，設定每幾小節（Each）增加多少 BPM（Incr），以及目標速度（Target BPM）。達標後維持目標速度，不再計算新的加速次數。
 5. 開啟 **Rest Logic Control**，設定每幾次實際加速休息、以及休息秒數。休息結束後以新速度繼續；間隔訓練關閉時不會自動休息。
-6. **START CUE** 控制開始與休息結束時的預備拍；**TRANS CUE** 控制變速後的預備拍。使用隨網站提供的固定英文語音，和節拍共用 Web Audio 時鐘；不依賴系統語音服務。每個數字的播放長度會依當前速度調整，包含變速與休息後的預備拍。
+6. **START CUE** 控制開始與休息結束時的預備拍；**TRANS CUE** 控制變速後的預備拍。使用隨網站提供的固定英文女聲，和節拍共用 Web Audio 時鐘；不依賴系統語音服務。每個數字的播放長度會依當前速度調整，包含變速與休息後的預備拍。
 
-報數加快時音高也會升高；在極高速度、八分音符或很長的數字下，語音仍會在下一拍前結束，但辨識度會降低。
+語音使用固定的自然女聲，播放倍率始終為 1。能在一拍內說完時保留原音；必要時以 WSOLA 時間壓縮縮短發音，保留音高，不再靠升高音調加速。極快速度、八分音符或很長的數字仍會降低發音辨識度。
+
+舊版使用裝置預設英文語音，沒有指定聲音名稱；目前使用的是固定 Kokoro Heart 女聲，並不宣稱與每個裝置原先的系統女聲完全相同。
 
 練習時請保持頁面在前景、裝置螢幕開啟。切換分頁或鎖定手機時，瀏覽器可能暫停音訊或限制計時，不能保證背景節拍精度。Master Volume 同時控制節拍與語音提示；0% 會靜音。
 
@@ -34,7 +36,7 @@ npm run preview
 
 ## 音訊驗證
 
-`npm test` 包含全部整數 BPM 30–400 × `/4`、`/8` 的 742 種組合，以及首次載入、取消、重試、變速、休息、自訂整數拍數、取樣率轉換與音量測試。
+`npm test` 包含全部整數 BPM 30–400 × `/4`、`/8` 的 742 種組合，以及首次載入、取消、重試、變速、休息、自訂整數拍數、取樣率轉換與音量測試，另驗證時間壓縮前後的音高與未壓縮音訊的一致性。
 
 另可執行 `npm run qa:browser`、`npm run preview`，開啟：
 
@@ -43,13 +45,14 @@ npm run preview
 
 這些頁面只供本機測試；正常 `npm run build` 會移除，不會部署。波形驗證不等同於在所有手機、耳機與瀏覽器上逐一聆聽。拍數支援 JavaScript 可精確表示的正整數（至 9,007,199,254,740,991），只按需組合當前數字，音檔快取最多保留 64 組。
 
-需要重建語音時執行 `npm run generate:voice`。產生器使用鎖定版本的 eSpeak NG，修剪起始／尾端靜音並統一音量；不會上傳文字或連線到語音服務。
+需要重建語音時，先執行 `npm ci --prefix scripts/voice-generator`，再執行 `npm run generate:voice`。產生器使用 Kokoro-82M 的 `af_heart` 女聲，在本機產生並修剪靜音、統一音量。首次會下載約 320 MB 模型到已忽略的 `artifacts/voice-model/`；模型與產生器依賴不會部署。生成文字不會上傳到語音服務，語音資訊表記錄模型與聲音的 SHA-256。
 
 ## 檔案與打包
 
 - `index.html`：介面與語意標籤。
 - `src/app.js`：排程、間隔訓練、休息與輸入驗證。
 - `src/audio.js`：同時鐘的節拍／語音播放、整數報數組合與音量控制。
+- `src/stretch.js`：以 SoundTouch WSOLA 保留音高的時間壓縮，在排程前產生音訊緩衝區。
 - `public/audio/`：已生成的英文語音 WAV 與字詞位置表；一般建置不需重新生成。
 - `src/styles.css`：原有面板樣式與 Tailwind 建置入口。
 - `tests/`：排程與載入競態測試，以及瀏覽器實際波形和首次啟動檢查頁。
@@ -61,7 +64,7 @@ npm run preview
 GitHub Releases 提供可直接部署的網站 ZIP、原始碼下載與包含完整 Git 歷史的 `.bundle` 備份。還原 Git 備份：
 
 ```sh
-git clone intervalmetronome-v1.1.0.bundle intervalmetronome
+git clone intervalmetronome-v1.2.0.bundle intervalmetronome
 cd intervalmetronome
 git remote set-url origin https://github.com/BBCODE1111/intervalmetronome.git
 ```

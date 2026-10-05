@@ -1,6 +1,7 @@
 import { mkdir, rm, cp, copyFile, writeFile, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { compile, optimize } from '@tailwindcss/node';
+import { build } from 'esbuild';
 
 await rm('dist', { recursive: true, force: true });
 await mkdir('dist/assets/fonts', { recursive: true });
@@ -8,6 +9,8 @@ await mkdir('dist/licenses', { recursive: true });
 await copyFile('index.html', 'dist/index.html');
 await copyFile('src/app.js', 'dist/assets/app.js');
 await copyFile('src/audio.js', 'dist/assets/audio.js');
+await build({ entryPoints: ['src/stretch.js'], outfile: 'dist/assets/stretch.js', bundle: true, format: 'iife', globalName: 'MetronomeStretch', target: 'es2020', sourcemap: true, legalComments: 'inline' });
+await copyFile('node_modules/@soundtouchjs/core/LICENSE', 'dist/licenses/SoundTouch-MPL-2.0.txt');
 await cp('public/audio', 'dist/assets/audio', { recursive: true });
 await copyFile('public/favicon.svg', 'dist/favicon.svg');
 await copyFile('README.md', 'dist/README.md');

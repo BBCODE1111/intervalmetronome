@@ -1,13 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import * as MetronomeStretch from '../src/stretch.js';
 import { readFileSync } from 'node:fs';
 
 const audioSource = readFileSync(new URL('../src/audio.js', import.meta.url), 'utf8');
 const source = readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const manifest = JSON.parse(readFileSync(new URL('../public/audio/counts-v1.json', import.meta.url)));
-const wave = readFileSync(new URL('../public/audio/counts-v1.wav', import.meta.url));
+const manifest = JSON.parse(readFileSync(new URL('../public/audio/counts-v2.json', import.meta.url)));
+const wave = readFileSync(new URL('../public/audio/counts-v2.wav', import.meta.url));
 
 function createApp({ audio = true, loading = false, failed = false, sampleRate = manifest.sampleRate } = {}) {
   const elements = new Map();
@@ -60,7 +61,7 @@ function createApp({ audio = true, loading = false, failed = false, sampleRate =
   if (audio) window.AudioContext = AudioContext;
   const network = { failed };
   const context = vm.createContext({
-    document: { getElementById: id => elements.get(id) }, window, AbortController,
+    document: { getElementById: id => elements.get(id) }, window, AbortController, MetronomeStretch,
     async fetch(url) {
       requests.push(url); await gate;
       if (network.failed) throw new Error('offline');
@@ -90,12 +91,13 @@ function assertAligned(app, clickOffset = 0, count = 4) {
   assert.equal(app.voices.length, count);
   for (let i = 0; i < count; i++) {
     const voice = app.voices[i], click = app.clicks[i + clickOffset];
+    assert.equal(voice.playbackRate.value, 1, 'voice pitch never changes with playback rate');
     assert.equal(voice.time, click.time, 'voice and click use the identical audio timestamp');
     assert.ok(voice.buffer.getChannelData(0).some(sample => Math.abs(sample) > 0.01), 'non-silent actual voice sample');
     if (i + 1 < count) {
       assert.ok(voice.time + voice.buffer.duration / voice.playbackRate.value < app.voices[i + 1].time, 'entire number ends before next beat');
     }
-    assert.deepEqual(voice.buffer.getChannelData(0), app.run(`sound.bufferFor(MetronomeAudio.numberWords(${i + 1})).getChannelData(0)`), 'correct spoken number');
+    assert.deepEqual(voice.buffer.getChannelData(0), app.run(`sound.bufferFor(MetronomeAudio.numberWords(${i + 1}), beatDuration() * 0.85).getChannelData(0)`), 'correct spoken number');
   }
 }
 
@@ -301,10 +303,10 @@ test('an old failed start cannot stop a newer session', async () => {
 });
 
 
-test('voice bank handles a resampler flooring the last frame at 48 kHz', async () => {
-  const app = createApp({ sampleRate: 48000 });
+test('voice bank handles a resampler flooring the last frame at 44.1 kHz', async () => {
+  const app = createApp({ sampleRate: 44100 });
   await app.run('start()');
-  assert.equal(app.run('sound.sampleRate'), 48000);
+  assert.equal(app.run('sound.sampleRate'), 44100);
   assert.ok(app.run('sound.clips.speed.length') > 0);
   assert.equal(app.voices.length, 1);
   assert.equal(app.voices[0].time, app.clicks[0].time);

@@ -46,13 +46,13 @@
             const timeout = setTimeout(() => controller.abort(), 15000);
             try {
                 const [manifestResponse, waveResponse] = await Promise.all([
-                    fetch('./assets/audio/counts-v1.json', { signal: controller.signal }),
-                    fetch('./assets/audio/counts-v1.wav', { signal: controller.signal }),
+                    fetch('./assets/audio/counts-v2.json', { signal: controller.signal }),
+                    fetch('./assets/audio/counts-v2.wav', { signal: controller.signal }),
                 ]);
                 if (!manifestResponse.ok || !waveResponse.ok) throw new Error('Voice download failed');
                 const [manifest, data] = await Promise.all([manifestResponse.json(), waveResponse.arrayBuffer()]);
                 // Explicit sample rate keeps sprite offsets correct if the device
-                // decodes 22.05 kHz WAV to 44.1 or 48 kHz audio.
+                // resamples the voice WAV to 44.1 or 48 kHz audio.
                 const bank = await this.context.decodeAudioData(data);
                 const clips = {};
                 for (const [word, range] of Object.entries(manifest.clips)) {
@@ -71,16 +71,18 @@
             } finally { clearTimeout(timeout); controller.abort(); }
         }
 
-        bufferFor(words) {
+        bufferFor(words, maxSeconds = Infinity) {
             if (!this.clips) throw new Error('Voice is not ready');
-            const key = words.join(' ');
+            const key = `${words.join(' ')}:${maxSeconds}`;
             if (this.cache.has(key)) return this.cache.get(key);
             const gap = Math.round(this.sampleRate * 0.008);
             const length = words.reduce((sum, word) => sum + this.clips[word].length, 0) + gap * (words.length - 1);
-            const buffer = this.context.createBuffer(1, length, this.sampleRate);
-            const pcm = buffer.getChannelData(0);
+            const original = new Float32Array(length);
             let offset = 0;
-            for (const word of words) { pcm.set(this.clips[word], offset); offset += this.clips[word].length + gap; }
+            for (const word of words) { original.set(this.clips[word], offset); offset += this.clips[word].length + gap; }
+            const pcm = MetronomeStretch.fitSpeech(original, this.sampleRate, maxSeconds);
+            const buffer = this.context.createBuffer(1, pcm.length, this.sampleRate);
+            buffer.getChannelData(0).set(pcm);
             // An arbitrary meter must never allocate audio for all its beats.
             if (this.cache.size >= 64) this.cache.delete(this.cache.keys().next().value);
             this.cache.set(key, buffer);
@@ -96,13 +98,13 @@
             };
         }
 
-        voice(words, time, duration, naturalRate = 1) {
-            const buffer = this.bufferFor(words);
+        voice(words, time, duration) {
+            const buffer = this.bufferFor(words, duration * 0.85);
             const source = this.context.createBufferSource();
             source.buffer = buffer;
-            // Finish every whole number within this beat, including compound
-            // numbers, /8, and the fastest supported tempo. Never queue speech.
-            source.playbackRate.value = Math.max(0.8, naturalRate, buffer.duration / (duration * 0.85));
+            // Keep the speaker's original pitch. Timing changes are rendered
+            // into the buffer in advance; playback never speeds up the waveform.
+            source.playbackRate.value = 1;
             source.connect(this.master);
             this.track(source);
             source.start(time);
@@ -110,7 +112,15 @@
         }
 
         count(number, time, beatDuration) {
-            return this.voice(numberWords(number), time, beatDuration, 0.5 / beatDuration);
+            return this.voice(numberWords(number), time, beatDuration);
+        }
+
+        prepareCounts(beats, beatDuration) {
+            // Prime common count-ins before starting the clock, bounding work
+            // for arbitrary meters. Longer counts are cached on demand.
+            for (let count = 1; count <= Math.min(beats, 16); count++) {
+                this.bufferFor(numberWords(count), beatDuration * 0.85);
+            }
         }
 
         rest(bpm, time, duration) {

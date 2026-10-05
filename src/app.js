@@ -302,6 +302,7 @@ async function start() {
         if (audioCtx.state !== 'running') await audioCtx.resume();
         if (thisSession !== session || !isPlaying) return;
         if (audioCtx.state !== 'running') throw new Error('Audio context is not running');
+        if (startCueToggle.checked) sound.prepareCounts(measureBeats, beatDuration());
     } catch {
         if (thisSession !== session || !isPlaying) return;
         stop();
