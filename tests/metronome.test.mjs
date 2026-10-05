@@ -73,8 +73,8 @@ function createApp({ speech = true, audio = true } = {}) {
   return { run, tick, elements, clicks, spoken, speechEvents, timers };
 }
 
-test('count-in keeps the original uninterrupted speech queue at multiple tempos and signatures', async () => {
-  for (const tempo of [60, 120, 180, 240]) {
+test('count-in follows every BPM from 30 to 400 in both note signatures without interruption', async () => {
+  for (let tempo = 30; tempo <= 400; tempo++) {
     for (const note of ['4', '8']) {
       const app = createApp();
       app.run(`updateBPM(${tempo}); sigDenominator.value = '${note}'; intervalEnableToggle.checked = false`);
