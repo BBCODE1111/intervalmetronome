@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0
+
+- Replace browser speech synthesis with bundled, silence-trimmed voice samples. Spoken counts and clicks now start on the same Web Audio timestamp; each complete number fits within its beat at the current tempo.
+- Wait for successful voice download/decode before the first beat. Cancelled starts cannot launch stale schedulers, failed loads can be retried, and stopping cancels both clicks and voice.
+- Keep the initial 4/4 meter. Beats / MSR remains direct numeric entry, accepts positive safe integers without the previous 16-beat cap, and rejects decimals instead of truncating them. Apply live meter edits at a complete measure/count-in boundary.
+- Assemble compound numbers on demand using a bounded cache; include rest announcements and one shared volume control.
+- Handle 44.1/48 kHz resampling boundaries and late scheduler callbacks without a burst of missed beats.
+- Add reproducible voice generation and local browser QA pages. Browser waveform validation: 36 renders / 360 spoken beats, maximum measured voice/click signal-onset difference 0.046 ms, no cross-beat voice overlap, and silent output after mute/stop. Real-time analyser checks cover cold and repeat starts. These measurements do not certify acoustic output on every device.
+
 ## 1.0.1
 
 - Restore the original uninterrupted speech queue during count-in. Version 1.0.0 called `speechSynthesis.cancel()` before every number; cancellation now occurs only when stopping playback.

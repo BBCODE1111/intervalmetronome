@@ -4,7 +4,7 @@ import { resolve, extname, sep } from 'node:path';
 
 const root = resolve('dist');
 const port = Number(process.env.PORT || 4173);
-const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.md': 'text/plain; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
+const types = { '.json': 'application/json', '.wav': 'audio/wav', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.md': 'text/plain; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
 await stat(resolve(root, 'index.html'));
 createServer(async (request, response) => {
   try {

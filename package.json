@@ -1,6 +1,6 @@
 {
   "name": "intervalmetronome",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "description": "Interval metronome for guitar and instrument practice",
   "type": "module",
@@ -10,11 +10,14 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test",
-    "preview": "node scripts/serve.mjs"
+    "preview": "node scripts/serve.mjs",
+    "generate:voice": "node scripts/generate-voice.mjs",
+    "qa:browser": "npm run build && node scripts/prepare-browser-qa.mjs"
   },
   "devDependencies": {
     "@fontsource/orbitron": "5.3.0",
     "@tailwindcss/node": "4.3.3",
+    "espeak-ng": "1.0.2",
     "tailwindcss": "4.3.3"
   }
 }

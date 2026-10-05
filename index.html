@@ -8,7 +8,8 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <meta name="theme-color" content="#121212">
     <link rel="stylesheet" href="./assets/styles.css">
-    <script src="./assets/app.js?v=1.0.1" defer></script>
+    <script src="./assets/audio.js?v=1.1.0" defer></script>
+    <script src="./assets/app.js?v=1.1.0" defer></script>
 </head>
 <body>
     <noscript>請啟用 JavaScript 才能使用節拍器。</noscript>
@@ -29,6 +30,7 @@
         <div class="display-screen">
             <div id="signatureDisplay" class="text-[0.7rem] text-red-900 mb-1 font-bold tracking-widest">4 / 4 TIME</div>
             <div id="bpmDisplay" class="bpm-value">120</div>
+            <div id="meterError" role="status" class="text-[0.6rem] text-red-700 mt-1"></div>
             <div id="infoBar" class="text-[0.6rem] mt-2 text-gray-600 uppercase tracking-[0.3em] font-bold">Standby</div>
         </div>
 
@@ -56,7 +58,7 @@
                 <div class="flex flex-col gap-3">
                     <div class="flex justify-between items-center text-[0.7rem]">
                         <span>Beats / MSR</span>
-                        <input type="number" id="sigNumerator" aria-label="Beats per measure" class="input-box" value="4" min="1" max="16">
+                        <input type="number" id="sigNumerator" aria-label="Beats per measure" aria-describedby="meterError" class="input-box" value="4" min="1" step="1" inputmode="numeric">
                     </div>
                     <div class="flex justify-between items-center text-[0.7rem]">
                         <span>Note Value</span>

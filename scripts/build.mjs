@@ -1,4 +1,4 @@
-import { mkdir, rm, copyFile, writeFile, readFile } from 'node:fs/promises';
+import { mkdir, rm, cp, copyFile, writeFile, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { compile, optimize } from '@tailwindcss/node';
 
@@ -7,6 +7,8 @@ await mkdir('dist/assets/fonts', { recursive: true });
 await mkdir('dist/licenses', { recursive: true });
 await copyFile('index.html', 'dist/index.html');
 await copyFile('src/app.js', 'dist/assets/app.js');
+await copyFile('src/audio.js', 'dist/assets/audio.js');
+await cp('public/audio', 'dist/assets/audio', { recursive: true });
 await copyFile('public/favicon.svg', 'dist/favicon.svg');
 await copyFile('README.md', 'dist/README.md');
 await copyFile('THIRD_PARTY_NOTICES.md', 'dist/THIRD_PARTY_NOTICES.md');
