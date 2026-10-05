@@ -1,84 +1,73 @@
+<div align="center">
+
 # Interval Metronome
 
-吉他與樂器練習用間隔節拍器，保留原本的復古類比面板。
+**從穩定跟拍，到一步步加速。**
 
-**線上使用：https://bbcode1111.github.io/intervalmetronome/**
+給吉他與樂器練習用的線上節拍器。設定自己的拍號、加速目標與休息時間，跟著語音預備拍開始練習。
 
-正式版 1–10 使用 [Kenney Voiceover Pack](https://kenney.nl/assets/voiceover-pack) 的 Giselle 真人女聲（CC0）。[先前合成女聲比較](https://bbcode1111.github.io/intervalmetronome/voice-preview/) 保留供參考。
+**[▶ 開啟節拍器](https://bbcode1111.github.io/intervalmetronome/)**
 
-原始專案：[Alecliu/intervalmetronome](https://github.com/Alecliu/intervalmetronome)。本倉庫保留完整原始 Git 歷史，作為 BBCODE1111 的發布版本。
+免安裝 · 免登入 · 開啟瀏覽器即可使用
 
-## 使用方式
+<a href="https://bbcode1111.github.io/intervalmetronome/">
+  <img src="docs/images/overview.jpg" alt="Interval Metronome 主介面：120 BPM、預設 4/4 拍，包含速度、音量、拍號、加速與休息設定" width="520">
+</a>
 
-1. 設定 Tempo（30–400 BPM）、音量與拍號。BPM 以四分音符計算，選 `/8` 時，每個八分音符拍點的間隔為 `/4` 的一半。
-2. **Beats / MSR** 直接輸入每小節拍數，例如 3、4、5、7、21；只接受大於 0 的整數，不接受小數。預設維持 **4/4**。播放中修改拍號，會在所需語音準備完成後的完整小節或預備拍開始時套用。
-3. 按 **START** 開始，按 **STOP** 停止。1–4 語音隨頁面載入並預先解碼，不必在按下按鈕後另行下載；5–10 在背景準備，超過 10 拍才載入補充語音。所需語音準備完成後才一起播放第一聲報數與節拍；準備期間仍可按 STOP 取消，失敗可按 START 重試。
-4. 開啟 **Interval Training Engine**，設定每幾小節（Each）增加多少 BPM（Incr），以及目標速度（Target BPM）。達標後維持目標速度，不再計算新的加速次數。
-5. 開啟 **Rest Logic Control**，設定每幾次實際加速休息、以及休息秒數。休息時播放簡短「Rest」，下一個速度顯示在面板上；休息結束後以新速度繼續。間隔訓練關閉時不會自動休息。
-6. **START CUE** 控制開始與休息結束時的預備拍；**TRANS CUE** 控制變速後的預備拍。使用隨網站提供的固定英文女聲，和節拍共用 Web Audio 時鐘；不依賴系統語音服務。每個數字的播放長度會依當前速度調整，包含變速與休息後的預備拍。
+</div>
 
-每拍同步優先，語音播放倍率始終為 1。1–10 的不同長度在發布前處理好，執行時選擇能在一拍內完成的較長版本；慢速保留原音，不在播放當下做時間壓縮。常用 1–4 與 Rest 音檔約 90 KB，隨 JavaScript 傳送的 gzip 大小約 90 KB；5–10 約 135 KB，超過 10 拍的補充包約 120 KB，兩者不阻擋預設 4/4 啟動。
+## 按照你的節奏練習
 
-11 以上數字由固定 Sarah 合成女聲按需組合，必要時仍使用 WSOLA 保留音高的時間壓縮。極快速度、八分音符或很長的數字仍會降低發音辨識度；不保證 400 BPM /8 的發音與一般說話同樣自然。
+| 功能 | 可以怎麼用 |
+| --- | --- |
+| **30–400 BPM** | 用滑桿或直接輸入速度，從慢速拆解到快速練習。 |
+| **自由輸入拍號** | 每小節拍數接受正整數，搭配四分或八分音符；預設為 4/4。 |
+| **英文語音預備拍** | 跟著 one、two、three、four 進入節奏；開始與變速時的提示可分別開關。 |
+| **自動逐步加速** | 設定每幾小節增加多少 BPM，達到目標後維持速度。 |
+| **練習與休息交替** | 設定每加速幾次休息一次，以及休息秒數，結束後繼續練習。 |
+| **音量與節拍燈** | 調整整體音量，搭配閃爍的 PULSE 燈掌握拍點。 |
 
-舊版使用裝置預設英文語音，沒有指定聲音名稱；目前的真人錄音與補充合成女聲都不宣稱與每個裝置原先的系統女聲完全相同。
+## 三步開始
 
-練習時請保持頁面在前景、裝置螢幕開啟。切換分頁或鎖定手機時，瀏覽器可能暫停音訊或限制計時，不能保證背景節拍精度。Master Volume 同時控制節拍與語音提示；0% 會靜音。
+1. **設定速度與拍號**：調整 Tempo、Beats / MSR 與 Note Value。
+2. **選擇練習方式**：固定速度練習時關閉 Interval Training Engine；需要循序加速時開啟並設定目標。
+3. **按 START**：跟著預備拍進入練習，隨時按 STOP 停止。
 
-## 本機開發與驗證
+## 自由拍號：輸入你需要的拍數
 
-需要 Node.js 22 以上（建議 Node.js 24）。
+三拍、五拍、七拍都可以。**Beats / MSR** 直接輸入每小節拍數，**Note Value** 選擇 `/4` 或 `/8`。下圖示範 7/8；拍數只接受正整數，不接受小數。
 
-```sh
-npm ci
-npm test
-npm run build
-npm run preview
-```
+<p align="center">
+  <img src="docs/images/custom-meter.jpg" alt="自由拍號示例：每小節 7 拍，音符值選擇 /8，畫面顯示 7/8 TIME" width="640">
+</p>
 
-開啟 http://127.0.0.1:4173/intervalmetronome/ 。可用 `PORT=8080 npm run preview` 指定其他連接埠。
+BPM 以四分音符計算，因此同樣的 BPM 下，選擇 `/8` 時的拍點間隔是 `/4` 的一半。
 
-## 音訊驗證
+## 讓節拍器陪你逐步加速
 
-`npm test` 包含全部整數 BPM 30–400 × `/4`、`/8` 的 742 種組合，以及首次載入、取消、重試、變速、休息、自訂整數拍數、取樣率轉換與音量測試，另驗證時間壓縮前後的音高與未壓縮音訊的一致性。
+例如從 **120 BPM 練到 160 BPM**：每 **8 小節**加快 **5 BPM**，每加速 **4 次**休息 **20 秒**，休息後接著練。
 
-另可執行 `npm run qa:browser`、`npm run preview`，開啟：
+<p align="center">
+  <img src="docs/images/interval-training.jpg" alt="間隔練習示例：每 8 小節增加 5 BPM，目標 160 BPM；每加速 4 次休息 20 秒" width="640">
+</p>
 
-- `/intervalmetronome/audio-qa.html`：按 Run waveform checks，以瀏覽器的 `OfflineAudioContext` 渲染實際音檔，分別測量語音和節拍聲道的起點、跨拍重疊、靜音與停止。包含 44.1 / 48 kHz、9 種 BPM、兩種音符值，以及 1–4、5、7、17、21、101、最大安全整數。
-- `/intervalmetronome/live-qa.html`：本機測試版介面，在首次／再次 START 時顯示實際語音訊號峰值、頁面到常用語音準備完成時間，以及按鈕到第一個音訊訊號時間（不含硬體輸出延遲）。報數應依序出現，且非靜音時每個數字的 peak 大於 0。
+| 面板設定 | 意思 |
+| --- | --- |
+| **Each (MSR)** | 每幾個練習小節加速一次。 |
+| **Incr (BPM)** | 每次增加的速度。 |
+| **Target BPM** | 想練到的目標速度。 |
+| **Every … Increments** | 每加速幾次安排一次休息。 |
+| **Wait … Sec** | 每次休息的秒數。 |
 
-這些頁面只供本機測試；正常 `npm run build` 會移除，不會部署。波形驗證不等同於在所有手機、耳機與瀏覽器上逐一聆聽。拍數支援 JavaScript 可精確表示的正整數（至 9,007,199,254,740,991），只按需組合當前數字，音檔快取最多保留 64 組。
+## 用預備拍接上節奏
 
-重建真人錄音長度版本：在 macOS 安裝開發依賴後，執行 `npm ci --prefix scripts/recorded-voice`、`npm run generate:recorded`。使用已包含授權的原始 OGG 錄音與系統 `afconvert` 製作 AAC；正常建置不需要音訊轉檔工具。
+- **START CUE**：開始練習與休息結束時，先播放一小節語音預備拍。
+- **TRANS CUE**：速度提高後，用新速度報數，幫助你接上下一段。
 
-需要重建補充合成語音時，先執行 `npm ci --prefix scripts/voice-generator`，再執行 `npm run generate:voice`。產生器使用 Kokoro-82M 的 `af_sarah` 女聲，在本機產生並修剪靜音、統一音量。首次會下載約 320 MB 模型到已忽略的 `artifacts/voice-model/`；模型與產生器依賴不會部署。生成文字不會上傳到語音服務，語音資訊表記錄模型與聲音的 SHA-256。
+語音報數配合當前拍號與速度，與每個拍點同步。休息時會提示「Rest」，面板顯示倒數時間與下一段速度。
 
-## 檔案與打包
+> 練習時請讓頁面保持在前景、螢幕保持開啟。速度很快或拍數很大時，語音會變得緊湊；Master Volume 同時控制節拍與語音音量。
 
-- `index.html`：介面與語意標籤。
-- `src/app.js`：排程、間隔訓練、休息與輸入驗證。
-- `src/audio.js`：同時鐘的節拍／語音播放、整數報數組合與音量控制。
-- `src/stretch.js`：以 SoundTouch WSOLA 保留音高的時間壓縮，只用於超過 10 的補充合成報數；常用真人報數不需執行此運算。
-- `public/audio/`：真人報數 AAC、分段資訊、首包 JavaScript 及補充語音來源；一般建置不需重新生成。
-- `src/styles.css`：原有面板樣式與 Tailwind 建置入口。
-- `tests/`：排程與載入競態測試，以及瀏覽器實際波形和首次啟動檢查頁。
-- `scripts/build.mjs`：產生可部署的 `dist/`。
-- `.github/workflows/pages.yml`：測試、建置及發布流程。
+---
 
-`dist/` 包含網站、JavaScript、CSS、字型、語音、圖示與第三方授權文字，執行時不依賴 Tailwind CDN 或 Google Fonts。可將整個 `dist/` 上傳到任何靜態網站主機；網址子目錄不需額外設定。這不代表網站已具備離線安裝或背景播放功能。
-
-GitHub Releases 提供可直接部署的網站 ZIP、原始碼下載與包含完整 Git 歷史的 `.bundle` 備份。還原 Git 備份：
-
-```sh
-git clone intervalmetronome-v1.3.0.bundle intervalmetronome
-cd intervalmetronome
-git remote set-url origin https://github.com/BBCODE1111/intervalmetronome.git
-```
-
-## GitHub Pages 部署
-
-倉庫的 **Settings → Pages → Source** 使用 **GitHub Actions**。推送至 `main` 後會先執行測試與建置，成功後自動部署到上方網址；Pull Request 只驗證、不部署。
-
-首次建立倉庫時需啟用 Pages。後續更新可在 **Actions → Test and deploy GitHub Pages** 檢查紀錄，亦可手動執行 workflow。
-
-部署方式依 [GitHub Pages 官方文件](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。樣式使用鎖定版本的 Tailwind Node 編譯器，只編譯 `index.html` 中出現的 utility classes；動態狀態樣式寫在 `src/styles.css`，不需要監看檔案的服務。
+**[開始練習 →](https://bbcode1111.github.io/intervalmetronome/)** · [素材與授權](THIRD_PARTY_NOTICES.md)

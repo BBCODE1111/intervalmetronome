@@ -15,6 +15,7 @@ await cp('public/audio', 'dist/assets/audio', { recursive: true });
 await cp('public/voice-preview', 'dist/voice-preview', { recursive: true });
 await copyFile('public/favicon.svg', 'dist/favicon.svg');
 await copyFile('README.md', 'dist/README.md');
+await cp('docs/images', 'dist/docs/images', { recursive: true });
 await copyFile('THIRD_PARTY_NOTICES.md', 'dist/THIRD_PARTY_NOTICES.md');
 await writeFile('dist/.nojekyll', '');
 for (const weight of [400, 700]) {
