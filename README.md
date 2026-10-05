@@ -43,7 +43,7 @@ npm run preview
 GitHub Releases 提供可直接部署的網站 ZIP、原始碼下載與包含完整 Git 歷史的 `.bundle` 備份。還原 Git 備份：
 
 ```sh
-git clone intervalmetronome-v1.0.0.bundle intervalmetronome
+git clone intervalmetronome-v1.0.1.bundle intervalmetronome
 cd intervalmetronome
 git remote set-url origin https://github.com/BBCODE1111/intervalmetronome.git
 ```

@@ -114,7 +114,9 @@ function speak(text) {
     utterance.volume = volume / 100;
     const baseRate = sigDenominator.value == "8" ? (bpm / 160) : (bpm / 100);
     utterance.rate = Math.min(Math.max(baseRate, 1.3), 3.5);
-    window.speechSynthesis.cancel();
+    // Preserve the original count-in queue. Cancelling before every number
+    // interrupts speech in flight instead of preserving its queued timing.
+    // Only stop() should clear the queue when the user stops playback.
     window.speechSynthesis.speak(utterance);
 }
 

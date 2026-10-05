@@ -22,7 +22,7 @@ function createApp({ speech = true, audio = true } = {}) {
   }
   let clock = 0, id = 0;
   const timers = new Map();
-  const clicks = [], spoken = [];
+  const clicks = [], spoken = [], speechEvents = [];
   class AudioContext {
     state = 'running';
     destination = {};
@@ -39,7 +39,13 @@ function createApp({ speech = true, audio = true } = {}) {
     }
     createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
   }
-  const speechSynthesis = { speak: utterance => spoken.push(utterance), cancel() {} };
+  const speechSynthesis = {
+    speak(utterance) {
+      spoken.push(utterance);
+      speechEvents.push({ type: 'speak', time: clock, text: utterance.text, rate: utterance.rate });
+    },
+    cancel() { speechEvents.push({ type: 'cancel', time: clock }); },
+  };
   const window = { addEventListener() {} };
   if (audio) window.AudioContext = AudioContext;
   if (speech) Object.assign(window, { speechSynthesis, SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } } });
@@ -64,8 +70,43 @@ function createApp({ speech = true, audio = true } = {}) {
     }
     clock = end;
   }
-  return { run, tick, elements, clicks, spoken, timers };
+  return { run, tick, elements, clicks, spoken, speechEvents, timers };
 }
+
+test('count-in keeps the original uninterrupted speech queue at multiple tempos and signatures', async () => {
+  for (const tempo of [60, 120, 180, 240]) {
+    for (const note of ['4', '8']) {
+      const app = createApp();
+      app.run(`updateBPM(${tempo}); sigDenominator.value = '${note}'; intervalEnableToggle.checked = false`);
+      await app.run('start()');
+      const duration = (60 / tempo) * (note === '8' ? 0.5 : 1);
+      app.tick(duration * 4);
+      const speech = app.speechEvents.filter(event => event.type === 'speak');
+      assert.deepEqual(speech.map(event => event.text), ['One', 'Two', 'Three', 'Four']);
+      assert.equal(app.speechEvents.filter(event => event.type === 'cancel').length, 0, `${tempo} BPM /${note} must not interrupt count-in speech`);
+      for (let beat = 0; beat < 4; beat++) {
+        assert.ok(Math.abs(speech[beat].time - (app.clicks[beat].time - 0.03)) < 1e-9);
+        assert.equal(speech[beat].rate, Math.min(Math.max(tempo / (note === '8' ? 160 : 100), 1.3), 3.5));
+      }
+      app.run('stop()');
+      assert.equal(app.speechEvents.filter(event => event.type === 'cancel').length, 1);
+    }
+  }
+});
+
+test('transition count-in uses the new tempo without cancelling each spoken beat', async () => {
+  const app = createApp();
+  app.run("startCueToggle.checked = false; stepMeasures.value = '1'; restEnableToggle.checked = false; stepAmount.value = '40'; targetBPM.value = '160'");
+  await app.run('start()');
+  app.tick(3.6);
+  const speech = app.speechEvents.filter(event => event.type === 'speak');
+  assert.deepEqual(speech.map(event => event.text), ['One', 'Two', 'Three', 'Four']);
+  assert.equal(app.speechEvents.filter(event => event.type === 'cancel').length, 0);
+  for (let beat = 0; beat < 4; beat++) {
+    assert.ok(Math.abs(speech[beat].time - (app.clicks[beat + 4].time - 0.03)) < 1e-9);
+    assert.equal(speech[beat].rate, 1.6);
+  }
+});
 
 test('blank and out-of-range BPM stay finite and synchronized', () => {
   const app = createApp();
