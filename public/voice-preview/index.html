@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#151719"><title>女聲試聽 · Interval Metronome</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#151719;color:#f4f0e7;font:16px/1.6 system-ui,-apple-system,sans-serif}main{max-width:780px;margin:auto;padding:38px 20px 48px}.eyebrow{font-size:12px;color:#d9bd78;letter-spacing:.15em}h1{font-size:clamp(27px,5vw,38px);line-height:1.25;margin:12px 0}p{color:#bdc2c5;margin:12px 0 24px}.controls{display:flex;gap:16px;flex-wrap:wrap;background:#202326;border:1px solid #393d40;border-radius:14px;padding:18px;margin:26px 0}label{display:flex;flex-direction:column;gap:6px;flex:1;min-width:110px;font-size:14px;color:#bdc2c5}select{font:inherit;background:#151719;color:#fff;padding:10px;border:1px solid #636a70;border-radius:8px;width:100%;min-height:44px}input{width:100%;accent-color:#edcd80;min-height:44px}.cards{display:grid;gap:14px}.card{display:flex;gap:14px;align-items:center;background:#202326;border:1px solid #454b50;border-radius:14px;padding:20px}.badge{display:grid;place-items:center;border:1px solid #a68d52;border-radius:50%;width:40px;height:40px;color:#edcd80;flex-shrink:0}.description{flex:1}h2{font-size:21px;margin:0}.description small{color:#aeb6bc}.card button{min-width:100px;min-height:46px;border:0;border-radius:9px;background:#edcd80;color:#17191b;font:600 16px system-ui;cursor:pointer}.card[data-playing="true"]{border-color:#edcd80}.card button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:4px}#status{min-height:56px;color:#edcd80;margin:16px 0 8px}.note{font-size:14px;color:#aeb6bc}.footer{border-top:1px solid #393d40;padding-top:20px;margin-top:28px;font-size:13px}a{color:#edcd80}.back{display:inline-block;margin-top:18px}@media(max-width:390px){main{padding:24px 14px}.card{padding:16px 12px;gap:10px}.card button{min-width:82px}}
+</style></head><body><main>
+<div class="eyebrow">INTERVAL METRONOME · VOICE PREVIEW</div>
+<h1>挑一個你喜歡的女聲</h1>
+<p>三款都是免費、可用於網站的英文女聲。每段依序數 1 到 8，搭配相同節拍；可以先聽 120 BPM，再切換速度比較。</p>
+<div class="controls">
+<label>速度<select id="tempo" aria-label="試聽速度"><option value="80">80 BPM</option><option value="120" selected>120 BPM</option><option value="180">180 BPM</option><option value="240">240 BPM</option><option value="400">400 BPM</option></select></label>
+<label>拍值<select id="note" aria-label="試聽拍值"><option value="4" selected>四分音符</option><option value="8">八分音符</option></select></label>
+<label>音量<input id="volume" type="range" min="0" max="100" value="80" aria-label="試聽音量"></label>
+</div>
+<div class="cards">
+<article class="card" id="card-af_heart"><span class="badge">A</span><div class="description"><h2>Heart</h2><small>英文女聲 · A</small></div><button type="button" data-voice="af_heart" aria-label="播放 A Heart" aria-pressed="false">▶ 試聽</button></article>
+<article class="card" id="card-af_bella"><span class="badge">B</span><div class="description"><h2>Bella</h2><small>英文女聲 · B</small></div><button type="button" data-voice="af_bella" aria-label="播放 B Bella" aria-pressed="false">▶ 試聽</button></article>
+<article class="card" id="card-af_sarah"><span class="badge">C</span><div class="description"><h2>Sarah</h2><small>英文女聲 · C</small></div><button type="button" data-voice="af_sarah" aria-label="播放 C Sarah" aria-pressed="false">▶ 試聽</button></article>
+</div>
+<div id="status" role="status" aria-live="polite">選一款女聲開始試聽。</div>
+<p class="note">這些樣本已保留音高，高速時只縮短發音。極快速度仍會較難辨識，建議也比較你平常練習的速度。</p>
+<p><strong>聽完後，在對話回覆 A、B 或 C。</strong><br>選定後會套用到正式節拍器；原本的 4/4 預設與自由輸入拍數會保留。</p>
+<div class="footer">語音來源：<a href="https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md" target="_blank" rel="noopener noreferrer">Kokoro 免費女聲</a> · Apache-2.0。這三款是固定合成女聲，不是錄製電腦或 iPhone 的系統語音。<br><a class="back" href="../">返回目前正式節拍器</a></div>
+<audio id="player" preload="none"></audio>
+<script>
+const player=document.getElementById('player'), status=document.getElementById('status');
+const tempo=document.getElementById('tempo'), note=document.getElementById('note'), volume=document.getElementById('volume');
+const names={af_heart:'A Heart',af_bella:'B Bella',af_sarah:'C Sarah'};
+let active=null, ticket=0;
+function resetButtons(){document.querySelectorAll('[data-voice]').forEach(button=>{button.textContent='▶ 試聽';button.setAttribute('aria-label','播放 '+names[button.dataset.voice]);button.setAttribute('aria-pressed','false');document.getElementById('card-'+button.dataset.voice).dataset.playing='false';});}
+function stop(){ticket++;player.pause();if(player.readyState>0)player.currentTime=0;active=null;resetButtons();}
+async function play(voice){
+  if(active===voice){stop();status.textContent='已停止。';return;}
+  stop();const attempt=++ticket;active=voice;
+  const effective=Number(tempo.value)*(note.value==='8'?2:1);
+  player.src='./audio/'+voice+'-'+effective+'.wav';player.volume=Number(volume.value)/100;
+  status.textContent='正在載入 '+names[voice]+'…';
+  try {await player.play();if(attempt!==ticket)return;
+    const button=document.querySelector('[data-voice="'+voice+'"]');button.textContent='■ 停止';button.setAttribute('aria-label','停止 '+names[voice]);button.setAttribute('aria-pressed','true');document.getElementById('card-'+voice).dataset.playing='true';
+    status.textContent='正在播放 '+names[voice]+' · '+tempo.value+' BPM · '+(note.value==='8'?'八分音符':'四分音符');
+  }catch(error){if(attempt!==ticket)return;stop();status.textContent='無法播放，請確認音量與網路後再按一次試聽。';}
+}
+document.querySelectorAll('[data-voice]').forEach(button=>button.addEventListener('click',()=>play(button.dataset.voice)));
+player.addEventListener('ended',()=>{const selected=names[active];stop();status.textContent=selected+' 已播放完畢，可以試聽另一款。';});
+[tempo,note].forEach(input=>input.addEventListener('change',()=>{stop();status.textContent='設定已更新，請再按女聲的試聽按鈕。';}));
+volume.addEventListener('input',()=>{player.volume=Number(volume.value)/100;});
+window.addEventListener('pagehide',stop);
+</script></main></body></html>

@@ -1,0 +1,174 @@
+{
+  "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+  "generator": "kokoro-js@1.2.1",
+  "speed": 1.3,
+  "sampleRate": 24000,
+  "pitch": "preserved; playback rate 1",
+  "files": [
+    {
+      "voice": "af_heart",
+      "effective": 80,
+      "filename": "af_heart-80.wav",
+      "duration": 6.27
+    },
+    {
+      "voice": "af_heart",
+      "effective": 120,
+      "filename": "af_heart-120.wav",
+      "duration": 4.270041666666667
+    },
+    {
+      "voice": "af_heart",
+      "effective": 160,
+      "filename": "af_heart-160.wav",
+      "duration": 3.27
+    },
+    {
+      "voice": "af_heart",
+      "effective": 180,
+      "filename": "af_heart-180.wav",
+      "duration": 2.9366666666666665
+    },
+    {
+      "voice": "af_heart",
+      "effective": 240,
+      "filename": "af_heart-240.wav",
+      "duration": 2.27
+    },
+    {
+      "voice": "af_heart",
+      "effective": 360,
+      "filename": "af_heart-360.wav",
+      "duration": 1.6033333333333333
+    },
+    {
+      "voice": "af_heart",
+      "effective": 400,
+      "filename": "af_heart-400.wav",
+      "duration": 1.47
+    },
+    {
+      "voice": "af_heart",
+      "effective": 480,
+      "filename": "af_heart-480.wav",
+      "duration": 1.27
+    },
+    {
+      "voice": "af_heart",
+      "effective": 800,
+      "filename": "af_heart-800.wav",
+      "duration": 0.87
+    },
+    {
+      "voice": "af_bella",
+      "effective": 80,
+      "filename": "af_bella-80.wav",
+      "duration": 6.27
+    },
+    {
+      "voice": "af_bella",
+      "effective": 120,
+      "filename": "af_bella-120.wav",
+      "duration": 4.270041666666667
+    },
+    {
+      "voice": "af_bella",
+      "effective": 160,
+      "filename": "af_bella-160.wav",
+      "duration": 3.27
+    },
+    {
+      "voice": "af_bella",
+      "effective": 180,
+      "filename": "af_bella-180.wav",
+      "duration": 2.9366666666666665
+    },
+    {
+      "voice": "af_bella",
+      "effective": 240,
+      "filename": "af_bella-240.wav",
+      "duration": 2.27
+    },
+    {
+      "voice": "af_bella",
+      "effective": 360,
+      "filename": "af_bella-360.wav",
+      "duration": 1.6033333333333333
+    },
+    {
+      "voice": "af_bella",
+      "effective": 400,
+      "filename": "af_bella-400.wav",
+      "duration": 1.47
+    },
+    {
+      "voice": "af_bella",
+      "effective": 480,
+      "filename": "af_bella-480.wav",
+      "duration": 1.27
+    },
+    {
+      "voice": "af_bella",
+      "effective": 800,
+      "filename": "af_bella-800.wav",
+      "duration": 0.87
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 80,
+      "filename": "af_sarah-80.wav",
+      "duration": 6.27
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 120,
+      "filename": "af_sarah-120.wav",
+      "duration": 4.270041666666667
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 160,
+      "filename": "af_sarah-160.wav",
+      "duration": 3.27
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 180,
+      "filename": "af_sarah-180.wav",
+      "duration": 2.9366666666666665
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 240,
+      "filename": "af_sarah-240.wav",
+      "duration": 2.27
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 360,
+      "filename": "af_sarah-360.wav",
+      "duration": 1.6033333333333333
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 400,
+      "filename": "af_sarah-400.wav",
+      "duration": 1.47
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 480,
+      "filename": "af_sarah-480.wav",
+      "duration": 1.27
+    },
+    {
+      "voice": "af_sarah",
+      "effective": 800,
+      "filename": "af_sarah-800.wav",
+      "duration": 0.87
+    }
+  ],
+  "source": "https://huggingface.co/hexgrad/Kokoro-82M",
+  "modelLicense": "Apache-2.0",
+  "timeStretch": "@soundtouchjs/core@2.1.1"
+}
