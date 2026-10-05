@@ -2,11 +2,11 @@
 
 ## 1.2.0
 
-- Replace the eSpeak voice with a fixed natural English female voice (Kokoro Heart). The original browser version did not identify a particular system voice, so this release does not claim an exact match to that voice.
+- Replace the eSpeak voice with the selected C preview voice, Kokoro Sarah. The original browser version did not identify a particular system voice, so this release does not claim an exact match to that voice.
 - Keep `AudioBufferSourceNode.playbackRate` at 1 at every BPM. Leave cues unchanged when they fit; otherwise render pitch-preserving WSOLA time compression before scheduling. Slow tempos no longer stretch the voice down in pitch.
 - Prepare the common startup counts before scheduling the first beat. Keep shared audio-clock synchronization, custom integer meters and the default 4/4.
 - Add pure-tone pitch regression tests at 24/44.1/48 kHz down to the 400 BPM /8 cue window, plus checks that uncompressed speech is bit-identical to its source. All 20 tests pass.
-- Browser verification of 36 renders / 360 spoken beats: maximum voice/click signal-onset difference 0.438 ms; no cross-beat overlap. Very short windows can still reduce speech intelligibility, without the former pitch increase.
+- Browser verification of Sarah across 36 renders / 360 spoken beats: maximum voice/click signal-onset difference 0.454 ms; no cross-beat overlap. First 120 BPM /4 start and repeat 400 BPM 7/8 start both produced all expected spoken counts. Very short windows can still reduce speech intelligibility, without the former pitch increase.
 
 ## 1.1.0
 

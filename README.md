@@ -4,7 +4,7 @@
 
 **線上使用：https://bbcode1111.github.io/intervalmetronome/**
 
-[免費女聲試聽比較](https://bbcode1111.github.io/intervalmetronome/voice-preview/)：Heart、Bella、Sarah。試聽樣本採保留音高的時間壓縮；選定音色後再套用到正式版。
+[免費女聲試聽比較](https://bbcode1111.github.io/intervalmetronome/voice-preview/)：Heart、Bella、Sarah。正式版已採用 C：Sarah，並以保留音高的時間壓縮配合節拍。
 
 原始專案：[Alecliu/intervalmetronome](https://github.com/Alecliu/intervalmetronome)。本倉庫保留完整原始 Git 歷史，作為 BBCODE1111 的發布版本。
 
@@ -19,7 +19,7 @@
 
 語音使用固定的自然女聲，播放倍率始終為 1。能在一拍內說完時保留原音；必要時以 WSOLA 時間壓縮縮短發音，保留音高，不再靠升高音調加速。極快速度、八分音符或很長的數字仍會降低發音辨識度。
 
-舊版使用裝置預設英文語音，沒有指定聲音名稱；目前使用的是固定 Kokoro Heart 女聲，並不宣稱與每個裝置原先的系統女聲完全相同。
+舊版使用裝置預設英文語音，沒有指定聲音名稱；目前使用的是固定 Kokoro Sarah 女聲，並不宣稱與每個裝置原先的系統女聲完全相同。
 
 練習時請保持頁面在前景、裝置螢幕開啟。切換分頁或鎖定手機時，瀏覽器可能暫停音訊或限制計時，不能保證背景節拍精度。Master Volume 同時控制節拍與語音提示；0% 會靜音。
 
@@ -47,7 +47,7 @@ npm run preview
 
 這些頁面只供本機測試；正常 `npm run build` 會移除，不會部署。波形驗證不等同於在所有手機、耳機與瀏覽器上逐一聆聽。拍數支援 JavaScript 可精確表示的正整數（至 9,007,199,254,740,991），只按需組合當前數字，音檔快取最多保留 64 組。
 
-需要重建語音時，先執行 `npm ci --prefix scripts/voice-generator`，再執行 `npm run generate:voice`。產生器使用 Kokoro-82M 的 `af_heart` 女聲，在本機產生並修剪靜音、統一音量。首次會下載約 320 MB 模型到已忽略的 `artifacts/voice-model/`；模型與產生器依賴不會部署。生成文字不會上傳到語音服務，語音資訊表記錄模型與聲音的 SHA-256。
+需要重建語音時，先執行 `npm ci --prefix scripts/voice-generator`，再執行 `npm run generate:voice`。產生器使用 Kokoro-82M 的 `af_sarah` 女聲，在本機產生並修剪靜音、統一音量。首次會下載約 320 MB 模型到已忽略的 `artifacts/voice-model/`；模型與產生器依賴不會部署。生成文字不會上傳到語音服務，語音資訊表記錄模型與聲音的 SHA-256。
 
 ## 檔案與打包
 

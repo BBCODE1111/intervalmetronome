@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 env.cacheDir = resolve('artifacts/voice-model');
-const model = 'onnx-community/Kokoro-82M-v1.0-ONNX', voice = 'af_heart', speed = 1.3;
+const model = 'onnx-community/Kokoro-82M-v1.0-ONNX', voice = 'af_sarah', speed = 1.3;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen',
   'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety',
@@ -41,7 +41,7 @@ wav.writeUInt32LE(samples.length * 2, 40);
 samples.forEach((sample,index) => wav.writeInt16LE(sample,44+index*2));
 const hash = data => createHash('sha256').update(data).digest('hex');
 const modelSha256 = hash(await readFile(resolve(env.cacheDir,model,'onnx/model.onnx')));
-const voiceSha256 = hash(await readFile(new URL('./node_modules/kokoro-js/voices/af_heart.bin',import.meta.url)));
+const voiceSha256 = hash(await readFile(new URL(`./node_modules/kokoro-js/voices/${voice}.bin`,import.meta.url)));
 await mkdir('public/audio',{recursive:true});
 await writeFile('public/audio/counts-v2.wav',wav);
 await writeFile('public/audio/counts-v2.json',JSON.stringify({version:2,sampleRate,generator:'kokoro-js@1.2.1',model,modelSha256,voice,voiceSha256,speed,clips},null,2)+'\n');
