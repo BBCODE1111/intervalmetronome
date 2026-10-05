@@ -96,11 +96,22 @@ function updateSigUI() {
     const value = readBeats();
     sigNumerator.setAttribute('aria-invalid', String(value === null));
     document.getElementById('meterError').textContent = value === null ? '請輸入大於 0 的整數拍數（不可有小數）' : '';
-    if (value !== null) signatureDisplay.textContent = `${value} / ${sigDenominator.value} TIME`;
+    if (value !== null) {
+        signatureDisplay.textContent = `${value} / ${sigDenominator.value} TIME`;
+        if (value > 4 && sound) sound.ready(value).catch(() => {
+            if (isPlaying && readBeats() === value) {
+                document.getElementById('meterError').textContent = '拍數語音準備失敗；目前拍號繼續播放，請停止後重試。';
+            }
+        });
+    }
 }
 
 function applySignature() {
-    measureBeats = readBeats() ?? measureBeats;
+    const desired = readBeats() ?? measureBeats;
+    // During playback, apply a larger meter at a complete boundary once its
+    // extra counts are ready, keeping the running beat uninterrupted.
+    if (isPlaying && sound && !sound.hasCounts(desired)) return;
+    measureBeats = desired;
     measureNote = sigDenominator.value === '8' ? 8 : 4;
 }
 
@@ -290,14 +301,15 @@ async function start() {
     startBtn.textContent = "STOP";
     startBtn.classList.add('active');
     startBtn.setAttribute('aria-pressed', 'true');
-    infoBar.textContent = 'LOADING AUDIO…';
+    infoBar.textContent = 'PREPARING AUDIO…';
     try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (!sound) sound = new MetronomeAudio.Engine(audioCtx);
         sound.setVolume(volume / 100);
+
         // Resume directly from the click gesture, before downloading voice data.
         const resumed = audioCtx.state === 'running' ? Promise.resolve() : audioCtx.resume();
-        await Promise.all([resumed, sound.ready()]);
+        await Promise.all([resumed, sound.ready(measureBeats)]);
         if (thisSession !== session || !isPlaying) return;
         if (audioCtx.state !== 'running') await audioCtx.resume();
         if (thisSession !== session || !isPlaying) return;
@@ -322,6 +334,8 @@ async function start() {
 }
 
 startBtn.addEventListener('click', start);
+startBtn.textContent = 'START';
+startBtn.disabled = false;
 window.addEventListener('pagehide', stop);
 
 updateSigUI();

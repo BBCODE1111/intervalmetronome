@@ -23,6 +23,61 @@
         return words;
     }
 
+    // Common count-ins are bundled with the page and decoded before START.
+    let recorded, recordedLoading, extraLoading, extraReady = false;
+    function decoderFor(context) {
+        const Offline = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        return Offline ? new Offline(1, 1, MetronomeVoiceData.sampleRate) : context;
+    }
+    function readVariants(bank, manifest) {
+        const ratio = bank.sampleRate / MetronomeVoiceData.sampleRate, clips = {};
+        const {max, abs} = Math;
+        for (const [word, variants] of Object.entries(manifest)) {
+            clips[word] = variants.map(({offset, length}) => {
+                const start = Math.round(offset * ratio);
+                const end = Math.min(bank.length, Math.round((offset + length) * ratio));
+                const pcm = bank.getChannelData(0).slice(start, end);
+                const peak = pcm.reduce((m, sample) => max(m, abs(sample)), 0);
+                const first = pcm.findIndex(sample => abs(sample) > peak * .004);
+                if (first < 0) throw new Error('Silent recorded voice');
+                const trimmed = pcm.slice(first);
+                const fade = Math.min(Math.round(bank.sampleRate * .001), trimmed.length);
+                for (let i = 0; i < fade; i++) trimmed[i] *= (i + 1) / fade;
+                return trimmed;
+            });
+        }
+        return clips;
+    }
+    function preload(context) {
+        if (recordedLoading) return recordedLoading;
+        const decoder = decoderFor(context);
+        if (!decoder) return Promise.resolve();
+        recordedLoading = (async () => {
+            const bytes = Uint8Array.from(atob(MetronomeVoiceData.encoded), char => char.charCodeAt(0));
+            const bank = await decoder.decodeAudioData(bytes.buffer);
+            recorded = {clips:readVariants(bank, MetronomeVoiceData.clips), sampleRate:bank.sampleRate};
+        })().catch(error => { recordedLoading = null; throw error; });
+        return recordedLoading;
+    }
+    function preloadExtra(context) {
+        if (extraLoading) return extraLoading;
+        const decoder = decoderFor(context);
+        if (!decoder) return Promise.resolve();
+        extraLoading = (async () => {
+            await preload(context);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
+            try {
+                const response = await fetch(MetronomeVoiceData.extra.src, {signal:controller.signal});
+                if (!response.ok) throw new Error('Extra counts unavailable');
+                const bank = await decoder.decodeAudioData(await response.arrayBuffer());
+                Object.assign(recorded.clips, readVariants(bank, MetronomeVoiceData.extra.clips));
+                extraReady = true;
+            } finally { clearTimeout(timeout); controller.abort(); }
+        })().catch(error => { extraLoading = null; throw error; });
+        return extraLoading;
+    }
+
     class Engine {
         constructor(context) {
             this.context = context;
@@ -34,7 +89,17 @@
 
         setVolume(value) { this.master.gain.value = Math.max(0, Math.min(1, value)); }
 
-        async ready() {
+        async ready(count = 4) {
+            await preload(this.context);
+            await Promise.all([
+                count > 4 ? preloadExtra(this.context) : undefined,
+                count > 10 ? this.loadExtended() : undefined,
+            ]);
+        }
+
+        hasCounts(count) { return !!recorded && (count <= 4 || extraReady) && (count <= 10 || !!this.clips); }
+
+        async loadExtended() {
             if (!this.loading) {
                 this.loading = this.load().catch(error => { this.loading = null; throw error; });
             }
@@ -47,7 +112,7 @@
             try {
                 const [manifestResponse, waveResponse] = await Promise.all([
                     fetch('./assets/audio/counts-v2.json', { signal: controller.signal }),
-                    fetch('./assets/audio/counts-v2.wav', { signal: controller.signal }),
+                    fetch('./assets/audio/counts-extended-v3.m4a', { signal: controller.signal }),
                 ]);
                 if (!manifestResponse.ok || !waveResponse.ok) throw new Error('Voice download failed');
                 const [manifest, data] = await Promise.all([manifestResponse.json(), waveResponse.arrayBuffer()]);
@@ -72,9 +137,18 @@
         }
 
         bufferFor(words, maxSeconds = Infinity) {
-            if (!this.clips) throw new Error('Voice is not ready');
             const key = `${words.join(' ')}:${maxSeconds}`;
             if (this.cache.has(key)) return this.cache.get(key);
+            if (words.length === 1 && recorded?.clips[words[0]]) {
+                const variants = recorded.clips[words[0]];
+                const pcm = variants.find(samples => samples.length / recorded.sampleRate <= maxSeconds) || variants[variants.length - 1];
+                const buffer = this.context.createBuffer(1, pcm.length, recorded.sampleRate);
+                buffer.getChannelData(0).set(pcm);
+                if (this.cache.size >= 64) this.cache.delete(this.cache.keys().next().value);
+                this.cache.set(key, buffer);
+                return buffer;
+            }
+            if (!this.clips) throw new Error('Extended voice is not ready');
             const gap = Math.round(this.sampleRate * 0.008);
             const length = words.reduce((sum, word) => sum + this.clips[word].length, 0) + gap * (words.length - 1);
             const original = new Float32Array(length);
@@ -99,7 +173,7 @@
         }
 
         voice(words, time, duration) {
-            const buffer = this.bufferFor(words, duration * 0.85);
+            const buffer = this.bufferFor(words, duration * 0.985);
             const source = this.context.createBufferSource();
             source.buffer = buffer;
             // Keep the speaker's original pitch. Timing changes are rendered
@@ -119,12 +193,12 @@
             // Prime common count-ins before starting the clock, bounding work
             // for arbitrary meters. Longer counts are cached on demand.
             for (let count = 1; count <= Math.min(beats, 16); count++) {
-                this.bufferFor(numberWords(count), beatDuration * 0.85);
+                this.bufferFor(numberWords(count), beatDuration * 0.985);
             }
         }
 
         rest(bpm, time, duration) {
-            return this.voice(['rest', 'next', 'speed', ...numberWords(bpm)], time, duration);
+            return this.voice(['rest'], time, duration);
         }
 
         click(time, strong, withVoice = false) {
@@ -147,5 +221,7 @@
             this.active.clear();
         }
     }
-    globalThis.MetronomeAudio = { Engine, numberWords };
+    globalThis.MetronomeAudio = { Engine, numberWords, preload, preloadExtra };
+    preload().then(() => preloadExtra()).catch(() => {});
+    // Failed optional background loads never prevent the bundled 1–4 count-in.
 })();

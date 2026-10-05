@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0
+
+- Use Giselle real voice recordings from the CC0 Kenney Voiceover Pack for counts 1–10. Prepare duration variants offline; choose the longest available version that fits each beat at unchanged playback pitch. Keep every-beat synchronization and the default 4/4.
+- Bundle an approximately 90 KB AAC core (1–4 plus Rest) with the page, decode before START, and load 5–10 in the background. Load the compressed Sarah supplement only for larger meters. Default startup no longer waits for the old 911 KB WAV or runtime time stretching.
+- Keep arbitrary positive integer meters; apply a live meter edit after its voice assets are ready at a complete boundary. Rest uses a short spoken prompt; the next BPM remains visible on the panel.
+- Add regressions for offline default startup and prebuilt 1–10 counts at every supported BPM/note value, plus browser startup timing instrumentation.
+- Verification: 23 automated tests; 36 real-browser renders / 360 counts with maximum voice/click onset difference 0.292 ms and no cross-beat overlap. A local Chrome cold-page test at 1 Mbps / 150 ms latency prepared the core in 1.48 seconds, then detected the first voice signal 54 ms after START. This measures browser audio, not iPhone Safari or hardware output latency.
+
 ## 1.2.0
 
 - Replace the eSpeak voice with the selected C preview voice, Kokoro Sarah. The original browser version did not identify a particular system voice, so this release does not claim an exact match to that voice.

@@ -8,9 +8,10 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <meta name="theme-color" content="#121212">
     <link rel="stylesheet" href="./assets/styles.css">
-    <script src="./assets/stretch.js?v=1.2.0" defer></script>
-    <script src="./assets/audio.js?v=1.2.0" defer></script>
-    <script src="./assets/app.js?v=1.2.0" defer></script>
+    <script src="./assets/audio/voice-data.js?v=1.3.0" defer></script>
+    <script src="./assets/stretch.js?v=1.3.0" defer></script>
+    <script src="./assets/audio.js?v=1.3.0" defer></script>
+    <script src="./assets/app.js?v=1.3.0" defer></script>
 </head>
 <body>
     <noscript>請啟用 JavaScript 才能使用節拍器。</noscript>
@@ -158,7 +159,7 @@
                 <div class="label-text">PULSE</div>
             </div>
 
-            <button id="startBtn" type="button" aria-pressed="false" class="big-button">START</button>
+            <button id="startBtn" type="button" aria-pressed="false" class="big-button" disabled>PREPARING…</button>
         </div>
 
         <div id="progressInfo" class="text-center text-[0.55rem] text-gray-600 uppercase tracking-widest mt-4">

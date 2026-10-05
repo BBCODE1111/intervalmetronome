@@ -2,8 +2,9 @@
 <html lang="en"><meta charset="utf-8"><base href="./"><title>Metronome audio verification</title>
 <style>body{font:16px system-ui;margin:24px}pre{white-space:pre-wrap}button{font:inherit;padding:12px}</style>
 <h1>Real Web Audio waveform checks</h1>
-<p>Uses the production engine, bundled WAV and browser audio renderer. Two channels isolate voice from click.</p>
+<p>Uses the production engine, bundled AAC recordings and browser audio renderer. Two channels isolate voice from click.</p>
 <button id="run">Run waveform checks</button><pre id="results" role="status">Ready</pre>
+<script src="./assets/audio/voice-data.js"></script>
 <script src="./assets/stretch.js"></script>
 <script src="./assets/audio.js"></script><script>
 const output = document.getElementById('results');
@@ -16,7 +17,7 @@ document.getElementById('run').onclick = async () => {
       const numbers = [1, 2, 3, 4, 5, 7, 17, 21, 101, Number.MAX_SAFE_INTEGER];
       const ctx = new OfflineAudioContext(2, Math.ceil((.1 + duration * numbers.length) * rate), rate);
       const voice = new MetronomeAudio.Engine(ctx), click = new MetronomeAudio.Engine(ctx);
-      await voice.ready();
+      await voice.ready(Number.MAX_SAFE_INTEGER);
       const merger = ctx.createChannelMerger(2);
       merger.connect(ctx.destination);
       voice.master.disconnect(); voice.master.connect(merger, 0, 0);
@@ -35,7 +36,7 @@ document.getElementById('run').onclick = async () => {
         maxOffset = Math.max(maxOffset, offset);
         if (offset > 2) throw new Error(`Voice onset ${offset} ms at ${bpm} BPM /${note}, number ${numbers[i]}, ${rate} Hz`);
         let gapPeak = 0;
-        for (let j = Math.ceil(start + duration * rate * .9); j < end - 2; j++) gapPeak = Math.max(gapPeak, Math.abs(v[j]));
+        for (let j = Math.ceil(start + duration * rate * .995); j < end - 2; j++) gapPeak = Math.max(gapPeak, Math.abs(v[j]));
         if (gapPeak > .0001) throw new Error(`Voice overlaps next beat at ${bpm} /${note}`);
         for (let j = start; j < end; j++) maxPeak = Math.max(maxPeak, Math.abs(v[j] + c[j]));
         beats++;
