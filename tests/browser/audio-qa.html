@@ -6,15 +6,17 @@
 <button id="run">Run waveform checks</button><pre id="results" role="status">Ready</pre>
 <script src="./assets/audio/voice-data.js"></script>
 <script src="./assets/stretch.js"></script>
-<script src="./assets/audio.js"></script><script>
+<script src="./assets/audio.js"></script><script type="module">
+import {speechBodyFrame} from "./assets/voice-attack-qa.js";
 const output = document.getElementById('results');
 document.getElementById('run').onclick = async () => {
   output.textContent = 'Running';
-  let cases = 0, beats = 0, maxOffset = 0, maxPeak = 0;
+  let cases = 0, beats = 0, maxOffset = 0, maxPeak = 0, maxBodyOffset = 0;
+  const defaultBodyOffsets = {};
   try {
     for (const rate of [44100, 48000]) for (const bpm of [30, 60, 90, 120, 150, 180, 240, 300, 400]) for (const note of [4, 8]) {
       const duration = 60 / bpm * (note === 8 ? .5 : 1);
-      const numbers = [1, 2, 3, 4, 5, 7, 17, 21, 101, Number.MAX_SAFE_INTEGER];
+      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 17, 21, 101, Number.MAX_SAFE_INTEGER];
       const ctx = new OfflineAudioContext(2, Math.ceil((.1 + duration * numbers.length) * rate), rate);
       const voice = new MetronomeAudio.Engine(ctx), click = new MetronomeAudio.Engine(ctx);
       await voice.ready(Number.MAX_SAFE_INTEGER);
@@ -30,11 +32,27 @@ document.getElementById('run').onclick = async () => {
       const rendered = await ctx.startRendering();
       const v = rendered.getChannelData(0), c = rendered.getChannelData(1);
       for (let i = 0; i < numbers.length; i++) {
-        const start = Math.round((.05 + duration * i) * rate), end = Math.round((.05 + duration * (i + 1)) * rate);
-        const onset = data => { for(let j = Math.max(0, start - 1); j < Math.min(end, data.length); j++) if(Math.abs(data[j]) > .0001) return j; throw new Error('Silent beat'); };
-        const offset = Math.abs(onset(v) - onset(c)) / rate * 1000;
+        const beatTime = .05 + duration * i;
+        const start = Math.round((beatTime - MetronomeAudio.countLeadSeconds) * rate);
+        const end = Math.round((beatTime + duration - MetronomeAudio.countLeadSeconds) * rate);
+        const clickStart = Math.round(beatTime * rate);
+        const onset = (data, begin) => {
+          for(let j = Math.max(0, begin - 1); j < Math.min(begin + duration * rate, data.length); j++) if(Math.abs(data[j]) > .0001) return j;
+          throw new Error('Silent beat');
+        };
+        // The voice's brief consonant precedes the click. Checking the first
+        // nonzero sample alone would count breath/noise as a successful cue.
+        const clickOnset = onset(c, clickStart);
+        const offset = Math.abs((onset(v, start) + MetronomeAudio.countLeadSeconds * rate) - clickOnset) / rate * 1000;
         maxOffset = Math.max(maxOffset, offset);
-        if (offset > 2) throw new Error(`Voice onset ${offset} ms at ${bpm} BPM /${note}, number ${numbers[i]}, ${rate} Hz`);
+        if (offset > 2) throw new Error(`Audio-clock error ${offset} ms at ${bpm} /${note}, number ${numbers[i]}`);
+        if (numbers[i] <= 10) {
+          const body = start + speechBodyFrame(v.slice(start, end), rate);
+          const bodyOffset = (body - clickOnset) / rate * 1000;
+          maxBodyOffset = Math.max(maxBodyOffset, Math.abs(bodyOffset));
+          if (Math.abs(bodyOffset) > 25) throw new Error(`Speech body ${bodyOffset} ms from click at ${bpm} /${note}, number ${numbers[i]}`);
+          if (bpm === 120 && note === 4 && numbers[i] <= 4) defaultBodyOffsets[`${rate}:${numbers[i]}`] = bodyOffset;
+        }
         let gapPeak = 0;
         for (let j = Math.ceil(start + duration * rate * .995); j < end - 2; j++) gapPeak = Math.max(gapPeak, Math.abs(v[j]));
         if (gapPeak > .0001) throw new Error(`Voice overlaps next beat at ${bpm} /${note}`);
@@ -53,7 +71,7 @@ document.getElementById('run').onclick = async () => {
       const pcm = (await ctx.startRendering()).getChannelData(0);
       if(pcm.some(sample => sample !== 0)) throw new Error(`${action} emitted audio`);
     }
-    output.textContent = JSON.stringify({status:'PASS', renders:cases, spokenBeats:beats, maxVoiceClickOnsetDifferenceMs:maxOffset, maxCombinedPeak:maxPeak, mutedPCM:'silent', stoppedPCM:'silent', sampleRates:[44100,48000]}, null, 2);
+    output.textContent = JSON.stringify({status:'PASS', renders:cases, spokenBeats:beats, maxSchedulingErrorMs:maxOffset, maxRecordedSpeechBodyOffsetMs:maxBodyOffset, default120BodyOffsetsMs:defaultBodyOffsets, maxCombinedPeak:maxPeak, mutedPCM:'silent', stoppedPCM:'silent', sampleRates:[44100,48000]}, null, 2);
   } catch(error) { output.textContent = `FAIL: ${error.stack}`; }
 };
 </script></html>

@@ -6,8 +6,8 @@ import { readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 
 const voiceDataSource = readFileSync(new URL('../public/audio/voice-data.js', import.meta.url), 'utf8');
-const commonWave = readFileSync(new URL('./fixtures/counts-natural-v3.wav', import.meta.url));
-const extraWave = readFileSync(new URL('./fixtures/counts-natural-extra-v3.wav', import.meta.url));
+const commonWave = readFileSync(new URL('./fixtures/counts-natural-v4.wav', import.meta.url));
+const extraWave = readFileSync(new URL('./fixtures/counts-natural-extra-v4.wav', import.meta.url));
 const decodedCache = new Map();
 
 const audioSource = readFileSync(new URL('../src/audio.js', import.meta.url), 'utf8');
@@ -106,7 +106,7 @@ function assertAligned(app, clickOffset = 0, count = 4) {
   for (let i = 0; i < count; i++) {
     const voice = app.voices[i], click = app.clicks[i + clickOffset];
     assert.equal(voice.playbackRate.value, 1, 'voice pitch never changes with playback rate');
-    assert.equal(voice.time, click.time, 'voice and click use the identical audio timestamp');
+    assert.ok(Math.abs(voice.time + .02 - click.time) < 1e-9, 'retained consonant starts 20 ms before the click on the same audio clock');
     assert.ok(voice.buffer.getChannelData(0).some(sample => Math.abs(sample) > 0.01), 'non-silent actual voice sample');
     if (i + 1 < count) {
       assert.ok(voice.time + voice.buffer.duration / voice.playbackRate.value < app.voices[i + 1].time, 'entire number ends before next beat');
@@ -124,11 +124,11 @@ test('first cold start waits for required core voice data; second start uses dec
   assert.equal(app.elements.get('infoBar').textContent, 'PREPARING AUDIO…');
   app.resolveLoad(); await starting;
   assert.equal(app.clicks[0].time, 3.05);
-  assert.equal(app.voices[0].time, 3.05);
+  assert.equal(app.voices[0].time, 3.05 - .02);
   app.run('stop()');
   await app.run('start()');
   assert.ok(app.requests.every(url=>url.includes('natural-extra')), 'first 1–4 start makes no audio network request');
-  assert.equal(app.voices[1].time, app.clicks[1].time);
+  assert.equal(app.voices[1].time, app.clicks[1].time - .02);
 });
 
 test('every BPM 30–400 and both note values have audible, non-overlapping count-in buffers', async () => {
@@ -141,7 +141,7 @@ test('every BPM 30–400 and both note values have audible, non-overlapping coun
       app.tick(duration * 4);
       assertAligned(app);
       for (let beat = 0; beat < 4; beat++) {
-        assert.ok(Math.abs(app.voices[beat].time - (0.05 + beat * duration)) < 1e-9);
+        assert.ok(Math.abs(app.voices[beat].time - (0.05 + beat * duration - .02)) < 1e-9);
         assert.ok(app.voices[beat].buffer.duration / app.voices[beat].playbackRate.value <= duration * 0.985 + 1e-9);
       }
       app.run('stop()');
@@ -208,7 +208,7 @@ test('transition count-in follows the new tempo on the exact measure boundary', 
   app.run("startCueToggle.checked = false; stepMeasures.value = '1'; restEnableToggle.checked = false; stepAmount.value = '40'; targetBPM.value = '160'");
   await app.run('start()'); app.tick(3.6);
   assertAligned(app, 4);
-  assert.equal(app.voices[0].time, 2.05);
+  assert.equal(app.voices[0].time, 2.05 - .02);
   assert.equal(app.voices[1].time - app.voices[0].time, 60 / 160);
 });
 
@@ -238,7 +238,7 @@ test('rest starts at measure end, speaks within the rest and resumes with aligne
   await app.run('start()'); await app.run('MetronomeAudio.preloadExtra()'); app.tick(2.3);
   assert.equal(app.voices[1].time, 1.05); // Rest after cue + one practice beat.
   assert.ok(app.voices[1].time + app.voices[1].buffer.duration / app.voices[1].playbackRate.value < 2.05);
-  assert.equal(app.voices[2].time, 2.05);
+  assert.equal(app.voices[2].time, 2.05 - .02);
   assert.equal(app.clicks[2].time, 2.05);
   assert.equal(app.run('bpm'), 130);
   app.run('stop()');
@@ -257,7 +257,7 @@ test('stopping during rest clears all audio and restarting plays immediately', a
   assert.ok(app.voices.every(voice => voice.cancelled));
   app.run('intervalEnableToggle.checked = false; startCueToggle.checked = true');
   await app.run('start()');
-  assert.equal(app.voices.at(-1).time, app.clicks.at(-1).time);
+  assert.equal(app.voices.at(-1).time, app.clicks.at(-1).time - .02);
 });
 
 test('target reached and lower targets do not trigger phantom increments', async () => {
@@ -292,7 +292,7 @@ test('unavailable audio and failed voice loads cannot silently start; failed fet
     if (options.failed) {
       app.network.failed = false;
       await app.run('start()');
-      assert.equal(app.voices[0].time, app.clicks[0].time);
+      assert.equal(app.voices[0].time, app.clicks[0].time - .02);
     }
   }
 });
@@ -327,7 +327,7 @@ test('voice bank handles a resampler flooring the last frame at 44.1 kHz', async
   assert.equal(app.run('sound.sampleRate'), 44100);
   assert.ok(app.run('sound.clips.speed.length') > 0);
   assert.equal(app.voices.length, 1);
-  assert.equal(app.voices[0].time, app.clicks[0].time);
+  assert.equal(app.voices[0].time, app.clicks[0].time - .02);
 });
 
 
@@ -337,7 +337,7 @@ test('a delayed scheduler never collapses missed voices and clicks into a burst'
   await app.run('start()');
   app.stall(0.2);
   app.run('clearTimeout(timerID); scheduler()');
-  assert.equal(app.voices[1].time, app.clicks[1].time);
+  assert.equal(app.voices[1].time, app.clicks[1].time - .02);
   assert.ok(app.voices[1].time >= 0.22);
   for (let i = 1; i < app.voices.length; i++) {
     const previous = app.voices[i - 1];

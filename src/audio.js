@@ -1,6 +1,9 @@
 // Clicks and recorded count-in share one AudioContext and one sample clock.
 // Native speech synthesis has an independent queue and cannot schedule a beat.
 (() => {
+    // Give the retained consonant a short lead-in so the body of the number
+    // reaches the click. Fixed lead preserves count spacing across BPM changes.
+    const countLeadSeconds = .02;
     const units = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
         'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
     const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -186,7 +189,7 @@
         }
 
         count(number, time, beatDuration) {
-            return this.voice(numberWords(number), time, beatDuration);
+            return this.voice(numberWords(number), time - countLeadSeconds, beatDuration);
         }
 
         prepareCounts(beats, beatDuration) {
@@ -221,7 +224,7 @@
             this.active.clear();
         }
     }
-    globalThis.MetronomeAudio = { Engine, numberWords, preload, preloadExtra };
+    globalThis.MetronomeAudio = { Engine, numberWords, preload, preloadExtra, countLeadSeconds };
     preload().then(() => preloadExtra()).catch(() => {});
     // Failed optional background loads never prevent the bundled 1–4 count-in.
 })();

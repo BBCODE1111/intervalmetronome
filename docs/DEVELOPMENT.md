@@ -17,16 +17,24 @@ npm run preview
 
 開啟 http://127.0.0.1:4173/intervalmetronome/ 。可用 `PORT=8080 npm run preview` 指定其他連接埠。
 
+## 語音起音處理
+
+1–10 錄音會先縮短過長的氣音與輕聲開頭，保留約 25 ms 的子音。two 與 ten 另外保留 t 的起始爆破音；主要母音維持原本波形，必要的長度版本仍在發布前處理。播放時固定提前 20 ms 開始子音，讓較明顯的字音靠近拍點；每個數字使用相同提前量，避免變速時前後重疊。
+
+`attack.mjs` 使用低頻與全頻 RMS 的持續上升判定字音主體，並非把第一個非零樣本當成發音。這是可重現的聲學檢查，不能等同於每位聽者的主觀節奏感。背景可參考 [John Morton 的 P-centres 說明](https://johnmorton.co.uk/professional-life/theories/perceptual-centres/)。
+
 ## 音訊驗證
 
 `npm test` 包含全部整數 BPM 30–400 × `/4`、`/8` 的 742 種組合，以及首次載入、取消、重試、變速、休息、自訂整數拍數、取樣率轉換與音量測試，另驗證時間壓縮前後的音高與未壓縮音訊的一致性。
 
 另可執行 `npm run qa:browser`、`npm run preview`，開啟：
 
-- `/intervalmetronome/audio-qa.html`：按 Run waveform checks，以瀏覽器的 `OfflineAudioContext` 渲染實際音檔，分別測量語音和節拍聲道的起點、跨拍重疊、靜音與停止。包含 44.1 / 48 kHz、9 種 BPM、兩種音符值，以及 1–4、5、7、17、21、101、最大安全整數。
+- `/intervalmetronome/audio-qa.html`：按 Run waveform checks，以瀏覽器的 `OfflineAudioContext` 渲染實際音檔，分別測量排程誤差、字音主體與拍點的相對位置、跨拍重疊、靜音與停止。包含 44.1 / 48 kHz、9 種 BPM、兩種音符值，以及 1–10、17、21、101、最大安全整數。
 - `/intervalmetronome/live-qa.html`：本機測試版介面，在首次／再次 START 時顯示實際語音訊號峰值、頁面到常用語音準備完成時間，以及按鈕到第一個音訊訊號時間（不含硬體輸出延遲）。報數應依序出現，且非靜音時每個數字的 peak 大於 0。
 
 這些頁面只供本機測試；正常 `npm run build` 會移除，不會部署。波形驗證不等同於在所有手機、耳機與瀏覽器上逐一聆聽。拍數支援 JavaScript 可精確表示的正整數（至 9,007,199,254,740,991），只按需組合當前數字，音檔快取最多保留 64 組。
+
+v1.3.1 驗證：26 項自動測試通過；Chrome 實際 AAC 解碼後共 36 組、504 次報數，排程誤差最大 0.292 ms，1–10 字音主體與拍點的偏差最大 20.03 ms。預設 120 BPM /4 的 one 到 four 偏差約為 0、+5、0、−10 ms。首次 START 與再次 400 BPM 7/8 都有完整報數訊號。常用語音資料 gzip 為 69,766 bytes；播放時沒有新增起音分析。
 
 重建真人錄音長度版本：在 macOS 安裝開發依賴後，執行 `npm ci --prefix scripts/recorded-voice`、`npm run generate:recorded`。使用已包含授權的原始 OGG 錄音與系統 `afconvert` 製作 AAC；正常建置不需要音訊轉檔工具。
 
@@ -49,7 +57,7 @@ npm run preview
 GitHub Releases 提供可直接部署的網站 ZIP、原始碼下載與包含完整 Git 歷史的 `.bundle` 備份。還原 Git 備份：
 
 ```sh
-git clone intervalmetronome-v1.3.0.bundle intervalmetronome
+git clone intervalmetronome-v1.3.1.bundle intervalmetronome
 cd intervalmetronome
 git remote set-url origin https://github.com/BBCODE1111/intervalmetronome.git
 ```

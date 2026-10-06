@@ -29,9 +29,10 @@ MetronomeAudio.Engine.prototype.count = function(number, time, duration) {
   const analyser = this.context.createAnalyser(); analyser.fftSize = 256;
   const silent = this.context.createGain(); silent.gain.value = 0;
   source.connect(analyser); analyser.connect(silent); silent.connect(this.context.destination);
-  const record = {number, scheduled:time, peak:0, running:this.context.state};
+  const voiceTime = time - MetronomeAudio.countLeadSeconds;
+  const record = {number, scheduled:voiceTime, beatTime:time, peak:0, running:this.context.state};
   if (number === 1 && startup.firstScheduledAfterClickMs === null) {
-    startup.firstScheduledAfterClickMs = Math.round(performance.now() - clickedAt + (time - this.context.currentTime) * 1000);
+    startup.firstScheduledAfterClickMs = Math.round(performance.now() - clickedAt + (voiceTime - this.context.currentTime) * 1000);
     showMetrics();
   }
   probes.push(record);

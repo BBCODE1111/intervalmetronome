@@ -1,0 +1,635 @@
+{
+  "version": 4,
+  "sampleRate": 24000,
+  "source": "https://kenney.nl/assets/voiceover-pack",
+  "voice": "Giselle / Kenney Voiceover Pack",
+  "license": "CC0",
+  "processing": "Offline breath/aspiration shortening, retained consonant attacks and pitch-preserving length variants; runtime playbackRate 1",
+  "caps": [
+    null,
+    0.588,
+    0.49,
+    0.42,
+    0.3675,
+    0.32666666666666666,
+    0.27999999999999997,
+    0.245,
+    0.21,
+    0.18375,
+    0.147,
+    0.1176,
+    0.091875,
+    0.0735
+  ],
+  "sha256": "4488f4d9862bf7ec6c0e015618153d2a1c868a6313d8f0f72e7f39e5f89f3a51",
+  "clips": {
+    "one": [
+      {
+        "cap": null,
+        "offset": 0,
+        "length": 8630
+      },
+      {
+        "cap": 0.32666666666666666,
+        "offset": 9590,
+        "length": 7369
+      },
+      {
+        "cap": 0.27999999999999997,
+        "offset": 17919,
+        "length": 6650
+      },
+      {
+        "cap": 0.245,
+        "offset": 25529,
+        "length": 5850
+      },
+      {
+        "cap": 0.21,
+        "offset": 32339,
+        "length": 4873
+      },
+      {
+        "cap": 0.18375,
+        "offset": 38172,
+        "length": 4395
+      },
+      {
+        "cap": 0.147,
+        "offset": 43527,
+        "length": 3459
+      },
+      {
+        "cap": 0.1176,
+        "offset": 47946,
+        "length": 2576
+      },
+      {
+        "cap": 0.091875,
+        "offset": 51482,
+        "length": 2025
+      },
+      {
+        "cap": 0.0735,
+        "offset": 54467,
+        "length": 1748
+      }
+    ],
+    "two": [
+      {
+        "cap": null,
+        "offset": 57175,
+        "length": 10011
+      },
+      {
+        "cap": 0.3675,
+        "offset": 68146,
+        "length": 8633
+      },
+      {
+        "cap": 0.32666666666666666,
+        "offset": 77739,
+        "length": 7809
+      },
+      {
+        "cap": 0.27999999999999997,
+        "offset": 86508,
+        "length": 6716
+      },
+      {
+        "cap": 0.245,
+        "offset": 94184,
+        "length": 5861
+      },
+      {
+        "cap": 0.21,
+        "offset": 101005,
+        "length": 4942
+      },
+      {
+        "cap": 0.18375,
+        "offset": 106907,
+        "length": 4410
+      },
+      {
+        "cap": 0.147,
+        "offset": 112277,
+        "length": 3380
+      },
+      {
+        "cap": 0.1176,
+        "offset": 116617,
+        "length": 2362
+      },
+      {
+        "cap": 0.091875,
+        "offset": 119939,
+        "length": 1809
+      },
+      {
+        "cap": 0.0735,
+        "offset": 122708,
+        "length": 1287
+      }
+    ],
+    "three": [
+      {
+        "cap": null,
+        "offset": 124955,
+        "length": 11668
+      },
+      {
+        "cap": 0.42,
+        "offset": 137583,
+        "length": 9898
+      },
+      {
+        "cap": 0.3675,
+        "offset": 148441,
+        "length": 8742
+      },
+      {
+        "cap": 0.32666666666666666,
+        "offset": 158143,
+        "length": 7785
+      },
+      {
+        "cap": 0.27999999999999997,
+        "offset": 166888,
+        "length": 6551
+      },
+      {
+        "cap": 0.245,
+        "offset": 174399,
+        "length": 5833
+      },
+      {
+        "cap": 0.21,
+        "offset": 181192,
+        "length": 5025
+      },
+      {
+        "cap": 0.18375,
+        "offset": 187177,
+        "length": 4391
+      },
+      {
+        "cap": 0.147,
+        "offset": 192528,
+        "length": 3456
+      },
+      {
+        "cap": 0.1176,
+        "offset": 196944,
+        "length": 2768
+      },
+      {
+        "cap": 0.091875,
+        "offset": 200672,
+        "length": 2012
+      },
+      {
+        "cap": 0.0735,
+        "offset": 203644,
+        "length": 1397
+      }
+    ],
+    "four": [
+      {
+        "cap": null,
+        "offset": 206001,
+        "length": 12036
+      },
+      {
+        "cap": 0.49,
+        "offset": 218997,
+        "length": 11450
+      },
+      {
+        "cap": 0.42,
+        "offset": 231407,
+        "length": 9839
+      },
+      {
+        "cap": 0.3675,
+        "offset": 242206,
+        "length": 8731
+      },
+      {
+        "cap": 0.32666666666666666,
+        "offset": 251897,
+        "length": 7774
+      },
+      {
+        "cap": 0.27999999999999997,
+        "offset": 260631,
+        "length": 6546
+      },
+      {
+        "cap": 0.245,
+        "offset": 268137,
+        "length": 5828
+      },
+      {
+        "cap": 0.21,
+        "offset": 274925,
+        "length": 5015
+      },
+      {
+        "cap": 0.18375,
+        "offset": 280900,
+        "length": 4339
+      },
+      {
+        "cap": 0.147,
+        "offset": 286199,
+        "length": 3457
+      },
+      {
+        "cap": 0.1176,
+        "offset": 290616,
+        "length": 2433
+      },
+      {
+        "cap": 0.091875,
+        "offset": 294009,
+        "length": 1777
+      },
+      {
+        "cap": 0.0735,
+        "offset": 296746,
+        "length": 1398
+      }
+    ],
+    "rest": [
+      {
+        "cap": null,
+        "offset": 299104,
+        "length": 10612
+      }
+    ]
+  },
+  "extra": {
+    "clips": {
+      "five": [
+        {
+          "cap": null,
+          "offset": 0,
+          "length": 10956
+        },
+        {
+          "cap": 0.42,
+          "offset": 11916,
+          "length": 9778
+        },
+        {
+          "cap": 0.3675,
+          "offset": 22654,
+          "length": 8709
+        },
+        {
+          "cap": 0.32666666666666666,
+          "offset": 32323,
+          "length": 7748
+        },
+        {
+          "cap": 0.27999999999999997,
+          "offset": 41031,
+          "length": 6644
+        },
+        {
+          "cap": 0.245,
+          "offset": 48635,
+          "length": 5801
+        },
+        {
+          "cap": 0.21,
+          "offset": 55396,
+          "length": 4919
+        },
+        {
+          "cap": 0.18375,
+          "offset": 61275,
+          "length": 4390
+        },
+        {
+          "cap": 0.147,
+          "offset": 66625,
+          "length": 3369
+        },
+        {
+          "cap": 0.1176,
+          "offset": 70954,
+          "length": 2335
+        },
+        {
+          "cap": 0.091875,
+          "offset": 74249,
+          "length": 1804
+        },
+        {
+          "cap": 0.0735,
+          "offset": 77013,
+          "length": 1398
+        }
+      ],
+      "six": [
+        {
+          "cap": null,
+          "offset": 79371,
+          "length": 9711
+        },
+        {
+          "cap": 0.3675,
+          "offset": 90042,
+          "length": 8532
+        },
+        {
+          "cap": 0.32666666666666666,
+          "offset": 99534,
+          "length": 7769
+        },
+        {
+          "cap": 0.27999999999999997,
+          "offset": 108263,
+          "length": 6680
+        },
+        {
+          "cap": 0.245,
+          "offset": 115903,
+          "length": 5837
+        },
+        {
+          "cap": 0.21,
+          "offset": 122700,
+          "length": 4994
+        },
+        {
+          "cap": 0.18375,
+          "offset": 128654,
+          "length": 4406
+        },
+        {
+          "cap": 0.147,
+          "offset": 134020,
+          "length": 3469
+        },
+        {
+          "cap": 0.1176,
+          "offset": 138449,
+          "length": 2573
+        },
+        {
+          "cap": 0.091875,
+          "offset": 141982,
+          "length": 2029
+        },
+        {
+          "cap": 0.0735,
+          "offset": 144971,
+          "length": 1647
+        }
+      ],
+      "seven": [
+        {
+          "cap": null,
+          "offset": 147578,
+          "length": 9796
+        },
+        {
+          "cap": 0.3675,
+          "offset": 158334,
+          "length": 8401
+        },
+        {
+          "cap": 0.32666666666666666,
+          "offset": 167695,
+          "length": 7684
+        },
+        {
+          "cap": 0.27999999999999997,
+          "offset": 176339,
+          "length": 6632
+        },
+        {
+          "cap": 0.245,
+          "offset": 183931,
+          "length": 5851
+        },
+        {
+          "cap": 0.21,
+          "offset": 190742,
+          "length": 4769
+        },
+        {
+          "cap": 0.18375,
+          "offset": 196471,
+          "length": 4396
+        },
+        {
+          "cap": 0.147,
+          "offset": 201827,
+          "length": 3435
+        },
+        {
+          "cap": 0.1176,
+          "offset": 206222,
+          "length": 2765
+        },
+        {
+          "cap": 0.091875,
+          "offset": 209947,
+          "length": 1936
+        },
+        {
+          "cap": 0.0735,
+          "offset": 212843,
+          "length": 1402
+        }
+      ],
+      "eight": [
+        {
+          "cap": null,
+          "offset": 215205,
+          "length": 10072
+        },
+        {
+          "cap": 0.3675,
+          "offset": 226237,
+          "length": 8573
+        },
+        {
+          "cap": 0.32666666666666666,
+          "offset": 235770,
+          "length": 7781
+        },
+        {
+          "cap": 0.27999999999999997,
+          "offset": 244511,
+          "length": 6548
+        },
+        {
+          "cap": 0.245,
+          "offset": 252019,
+          "length": 5840
+        },
+        {
+          "cap": 0.21,
+          "offset": 258819,
+          "length": 4793
+        },
+        {
+          "cap": 0.18375,
+          "offset": 264572,
+          "length": 4410
+        },
+        {
+          "cap": 0.147,
+          "offset": 269942,
+          "length": 3449
+        },
+        {
+          "cap": 0.1176,
+          "offset": 274351,
+          "length": 2762
+        },
+        {
+          "cap": 0.091875,
+          "offset": 278073,
+          "length": 2021
+        },
+        {
+          "cap": 0.0735,
+          "offset": 281054,
+          "length": 1554
+        }
+      ],
+      "nine": [
+        {
+          "cap": null,
+          "offset": 283568,
+          "length": 13442
+        },
+        {
+          "cap": 0.49,
+          "offset": 297970,
+          "length": 11575
+        },
+        {
+          "cap": 0.42,
+          "offset": 310505,
+          "length": 10003
+        },
+        {
+          "cap": 0.3675,
+          "offset": 321468,
+          "length": 8299
+        },
+        {
+          "cap": 0.32666666666666666,
+          "offset": 330727,
+          "length": 7603
+        },
+        {
+          "cap": 0.27999999999999997,
+          "offset": 339290,
+          "length": 6543
+        },
+        {
+          "cap": 0.245,
+          "offset": 346793,
+          "length": 5805
+        },
+        {
+          "cap": 0.21,
+          "offset": 353558,
+          "length": 5040
+        },
+        {
+          "cap": 0.18375,
+          "offset": 359558,
+          "length": 4379
+        },
+        {
+          "cap": 0.147,
+          "offset": 364897,
+          "length": 3416
+        },
+        {
+          "cap": 0.1176,
+          "offset": 369273,
+          "length": 2504
+        },
+        {
+          "cap": 0.091875,
+          "offset": 372737,
+          "length": 2031
+        },
+        {
+          "cap": 0.0735,
+          "offset": 375728,
+          "length": 1555
+        }
+      ],
+      "ten": [
+        {
+          "cap": null,
+          "offset": 378243,
+          "length": 9722
+        },
+        {
+          "cap": 0.3675,
+          "offset": 388925,
+          "length": 8364
+        },
+        {
+          "cap": 0.32666666666666666,
+          "offset": 398249,
+          "length": 7671
+        },
+        {
+          "cap": 0.27999999999999997,
+          "offset": 406880,
+          "length": 6662
+        },
+        {
+          "cap": 0.245,
+          "offset": 414502,
+          "length": 5639
+        },
+        {
+          "cap": 0.21,
+          "offset": 421101,
+          "length": 4944
+        },
+        {
+          "cap": 0.18375,
+          "offset": 427005,
+          "length": 4398
+        },
+        {
+          "cap": 0.147,
+          "offset": 432363,
+          "length": 3452
+        },
+        {
+          "cap": 0.1176,
+          "offset": 436775,
+          "length": 2491
+        },
+        {
+          "cap": 0.091875,
+          "offset": 440226,
+          "length": 1921
+        },
+        {
+          "cap": 0.0735,
+          "offset": 443107,
+          "length": 1517
+        }
+      ]
+    },
+    "src": "./assets/audio/counts-natural-extra-v4.m4a",
+    "sha256": "ac36355c6a20d5cc2aa48b29b27686b41a5f8776aa5557e61c7f2ea3e2a68905"
+  }
+}

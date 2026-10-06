@@ -4,6 +4,7 @@ import {Stretch, CircularSampleBuffer} from '@soundtouchjs/core';
 import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import {prepareAttack, speechBodyFrame} from './attack.mjs';
 const rate=24000, words=['one','two','three','four','five','six','seven','eight','nine','ten'];
 const caps=[Infinity,...[100,120,140,160,180,210,240,280,320,400,500,640,800].map(bpm=>60/bpm*.98)];
 const temp='artifacts/recorded-voice';await mkdir(temp,{recursive:true});
@@ -20,14 +21,16 @@ function fit(pcm,seconds){if(pcm.length<=seconds*rate)return pcm;let tempo=pcm.l
  }
  out=out.slice(0,Math.floor(seconds*rate));for(let i=0;i<24;i++){out[i]*=(i+1)/24;out[out.length-1-i]*=(i+1)/24;}return out;
 }
-const decoder=new OggVorbisDecoder();await decoder.ready;const clips={},samples=[];
+const decoder=new OggVorbisDecoder();await decoder.ready;const clips={},samples=[],attackReport=[];
 function append(pcm){const offset=samples.length;for(const x of pcm)samples.push(x);for(let i=0;i<rate*.04;i++)samples.push(0);return{offset,length:pcm.length};}
 for(let n=1;n<=10;n++){
  const decoded=await decoder.decodeFile(await readFile(new URL(`./source/${n}.ogg`,import.meta.url)));if(decoded.errors.length)throw new Error(JSON.stringify(decoded.errors));
  const mono=Float32Array.from({length:decoded.samplesDecoded},(_,i)=>decoded.channelData.reduce((s,c)=>s+c[i],0)/decoded.channelData.length);
  await writeFile(`${temp}/original.wav`,wav(mono,decoded.sampleRate));execFileSync('afconvert',[`${temp}/original.wav`,`${temp}/resampled.wav`,'-f','WAVE','-d','LEI16@24000','-c','1']);
- const original=trim(readWave(await readFile(`${temp}/resampled.wav`)));const entries=[];
- for(const cap of caps){if(entries.length&&original.length<=cap*rate)continue;const pcm=fit(original,cap);entries.push({cap:Number.isFinite(cap)?cap:null,...append(pcm)});}
+ const raw=trim(readWave(await readFile(`${temp}/resampled.wav`)));
+ const prepared=prepareAttack(raw,rate,{word:words[n-1]});const original=prepared.pcm;const entries=[];
+ attackReport.push({word:words[n-1],beforeBodyMs:speechBodyFrame(raw,rate)/rate*1000,afterBodyMs:prepared.bodyFrame/rate*1000,removedMs:prepared.removedFrames/rate*1000});
+ for(const cap of caps){if(entries.length&&original.length<=cap*rate)continue;const fitted=fit(original,cap);const pcm=prepareAttack(fitted,rate,{word:words[n-1],maxLeadSeconds:Math.min(.025,cap*.12)}).pcm;entries.push({cap:Number.isFinite(cap)?cap:null,...append(pcm)});}
  clips[words[n-1]]=entries;console.log(n,entries.length,'prepared lengths');await decoder.reset();
 }
 decoder.free();
@@ -42,10 +45,11 @@ async function encodeBank(names,filename){
  const encoded=await readFile(`public/audio/${filename}.m4a`);
  return {clips:ranges,bytes:encoded.length,sha256:createHash('sha256').update(encoded).digest('hex'),encoded:encoded.toString('base64')};
 }
-const common=await encodeBank([...words.slice(0,4),'rest'],'counts-natural-v3');
-const extra=await encodeBank(words.slice(4),'counts-natural-extra-v3');
-const manifest={version:3,sampleRate:rate,source:'https://kenney.nl/assets/voiceover-pack',voice:'Giselle / Kenney Voiceover Pack',license:'CC0',processing:'Offline length variants, pitch preserved; runtime playbackRate 1',caps:caps.map(x=>Number.isFinite(x)?x:null),sha256:common.sha256,clips:common.clips,extra:{clips:extra.clips,src:'./assets/audio/counts-natural-extra-v3.m4a',sha256:extra.sha256}};
-await writeFile('public/audio/counts-natural-v3.json',JSON.stringify(manifest,null,2)+'\n');
+const common=await encodeBank([...words.slice(0,4),'rest'],'counts-natural-v4');
+const extra=await encodeBank(words.slice(4),'counts-natural-extra-v4');
+const manifest={version:4,sampleRate:rate,source:'https://kenney.nl/assets/voiceover-pack',voice:'Giselle / Kenney Voiceover Pack',license:'CC0',processing:'Offline breath/aspiration shortening, retained consonant attacks and pitch-preserving length variants; runtime playbackRate 1',caps:caps.map(x=>Number.isFinite(x)?x:null),sha256:common.sha256,clips:common.clips,extra:{clips:extra.clips,src:'./assets/audio/counts-natural-extra-v4.m4a',sha256:extra.sha256}};
+await writeFile(`${temp}/attack-report.json`,JSON.stringify(attackReport,null,2)+'\n');
+await writeFile('public/audio/counts-natural-v4.json',JSON.stringify(manifest,null,2)+'\n');
 await writeFile('public/audio/voice-data.js','// Prepared voice samples: Kenney (CC0); rest prompt: Kokoro Sarah. See THIRD_PARTY_NOTICES.md.\nglobalThis.MetronomeVoiceData='+JSON.stringify({...manifest,encoded:common.encoded})+';\n');
 await copyFile(new URL('./source/License.txt',import.meta.url),'public/audio/Kenney-CC0.txt');
 execFileSync('afconvert',['public/audio/counts-v2.wav','public/audio/counts-extended-v3.m4a','-f','m4af','-d','aac@24000','-c','1','-b','48000','-q','127','--no-filler']);

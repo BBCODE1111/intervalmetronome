@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.1
+
+- Shorten the breathy/quiet openings of recorded counts 1–10 before preparing tempo variants. Retain short consonants and explicitly preserve the initial t burst of two/ten; leave the main vowel waveform unchanged during attack preparation.
+- Give all count samples a fixed 20 ms articulation lead on the same audio clock. Preserve exact beat spacing and prepare enough scheduling headroom after a delayed callback.
+- Replace the noise-only synchronization check with an additional sustained speech-body check. Cover all ten recorded numbers, stop/restart and rest transitions, and preserve the lightweight preloaded core.
+
 ## 1.3.0
 
 - Use Giselle real voice recordings from the CC0 Kenney Voiceover Pack for counts 1–10. Prepare duration variants offline; choose the longest available version that fits each beat at unchanged playback pitch. Keep every-beat synchronization and the default 4/4.

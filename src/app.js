@@ -165,8 +165,8 @@ function scheduler() {
         }
     }
     // Do not emit a backlog of clicks if a browser tab was suspended.
-    if (!isResting && nextBeatTime < audioCtx.currentTime + 0.005) {
-        nextBeatTime = audioCtx.currentTime + 0.02;
+    if (!isResting && nextBeatTime < audioCtx.currentTime + MetronomeAudio.countLeadSeconds + 0.005) {
+        nextBeatTime = audioCtx.currentTime + MetronomeAudio.countLeadSeconds + 0.02;
     }
     while (!isResting && nextBeatTime < audioCtx.currentTime + scheduleAheadTime) {
         scheduleBeat(nextBeatTime);

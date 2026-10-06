@@ -1,5 +1,6 @@
 import { copyFile, readFile, writeFile } from 'node:fs/promises';
 await copyFile('tests/browser/audio-qa.html', 'dist/audio-qa.html');
+await copyFile('scripts/recorded-voice/attack.mjs', 'dist/assets/voice-attack-qa.js');
 const html = await readFile('dist/index.html', 'utf8');
 const probe = await readFile('tests/browser/live-probe.js', 'utf8');
 await writeFile('dist/assets/live-probe.js', probe);
